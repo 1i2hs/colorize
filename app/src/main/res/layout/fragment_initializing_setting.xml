@@ -1,0 +1,47 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                tools:context="edu.skku.inho.colorize.InitializingSettingFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressBar_initializing_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/textView_initializing_setting_progess"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="@string/initializing_setting"
+            android:textColor="@color/colorTernaryText"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/button_confirm_completion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/default_enabled_button_background"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/confirm"
+            android:textColor="@color/colorTernaryText"
+            android:textSize="16sp"
+            android:visibility="invisible"/>
+
+    </LinearLayout>
+</FrameLayout>

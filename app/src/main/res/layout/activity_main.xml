@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/layout_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true"
+    tools:context="edu.skku.inho.colorize.MainActivity">
+
+    <!--<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:id="@+id/textView_time"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:textSize="80dp"
+        android:textColor="@color/colorTernaryText"/>-->
+
+    <edu.skku.inho.colorize.DigitalClock
+        android:id="@+id/textView_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:textColor="@color/colorTernaryText"
+        android:textSize="80dp"
+        custom:dateFormat="time"/>
+
+    <edu.skku.inho.colorize.DigitalClock
+        android:id="@+id/textView_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_time"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorTernaryText"
+        android:textSize="18dp"
+        custom:dateFormat="date"/>
+
+    <View
+        android:id="@+id/view_selection_circle"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@+id/view_first_color_circle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/layerlist_select_circle"/>
+
+    <edu.skku.inho.colorize.RoundColorView
+        android:id="@+id/view_first_color_circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="false"
+        android:layout_below="@+id/textView_date"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/shape_color_circle_background"
+        android:clickable="true"
+        android:elevation="4dp"/>
+
+    <edu.skku.inho.colorize.RoundColorView
+        android:id="@+id/view_second_color_circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/view_third_color_circle"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="false"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@+id/view_first_color_circle"
+        android:background="@drawable/shape_color_circle_background"
+        android:elevation="4dp"/>
+
+    <edu.skku.inho.colorize.RoundColorView
+        android:id="@+id/view_third_color_circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="false"
+        android:layout_alignTop="@+id/view_selection_circle"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@+id/view_selection_circle"
+        android:background="@drawable/shape_color_circle_background"
+        android:elevation="4dp"/>
+
+    <edu.skku.inho.colorize.RoundColorView
+        android:id="@+id/view_fourth_color_circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="false"
+        android:layout_below="@+id/view_third_color_circle"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_toRightOf="@+id/view_fifth_color_circle"
+        android:background="@drawable/shape_color_circle_background"
+        android:elevation="4dp"/>
+
+    <edu.skku.inho.colorize.RoundColorView
+        android:id="@+id/view_fifth_color_circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="false"
+        android:layout_below="@+id/view_selection_circle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/shape_color_circle_background"
+        android:elevation="4dp"/>
+
+    <edu.skku.inho.colorize.RoundColorView
+        android:id="@+id/view_sixth_color_circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="false"
+        android:layout_below="@+id/view_seventh_color_circle"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_toLeftOf="@+id/view_fifth_color_circle"
+        android:background="@drawable/shape_color_circle_background"
+        android:elevation="4dp"/>
+
+    <edu.skku.inho.colorize.RoundColorView
+        android:id="@+id/view_seventh_color_circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="false"
+        android:layout_alignTop="@+id/view_selection_circle"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf="@+id/view_selection_circle"
+        android:background="@drawable/shape_color_circle_background"
+        android:elevation="4dp"/>
+
+    <edu.skku.inho.colorize.RoundColorView
+        android:id="@+id/view_eighth_color_circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/view_seventh_color_circle"
+        android:layout_alignParentRight="false"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="25dp"
+        android:layout_toLeftOf="@+id/view_first_color_circle"
+        android:background="@drawable/shape_color_circle_background"
+        android:elevation="4dp"/>
+
+</RelativeLayout>
