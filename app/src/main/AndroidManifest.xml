@@ -2,8 +2,10 @@
 <manifest package="edu.skku.inho.colorize"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.REORDER_TASKS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".ColorizeApplication"
@@ -13,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/ColorizeTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".LockScreenPage.MainActivity"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
@@ -28,7 +30,7 @@
         </service>
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".SettingPage.SplashActivity"
             android:finishOnTaskLaunch="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -38,10 +40,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingActivity"
+            android:name=".SettingPage.SettingActivity"
             android:finishOnTaskLaunch="true">
         </activity>
 
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+        </receiver>
     </application>
 
 </manifest>

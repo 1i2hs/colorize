@@ -1,6 +1,8 @@
-package edu.skku.inho.colorize;
+package edu.skku.inho.colorize.IconSortingModule;
 
 import java.util.ArrayList;
+
+import edu.skku.inho.colorize.ApplicationInfoBundle;
 
 /**
  * Created by XEiN on 2/11/16.

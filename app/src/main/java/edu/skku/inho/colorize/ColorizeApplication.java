@@ -9,6 +9,6 @@ public class ColorizeApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		ApplicationListProvider.initInstance();
+		LockScreenDataProvider.initInstance(this);
 	}
 }

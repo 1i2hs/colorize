@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize;
+package edu.skku.inho.colorize.SettingPage;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+
+import edu.skku.inho.colorize.R;
 
 /**
  * Created by XEiN on 2/20/16.

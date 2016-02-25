@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize;
+package edu.skku.inho.colorize.SettingPage;
 
 
 import android.animation.ObjectAnimator;
@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import edu.skku.inho.colorize.Constants;
+import edu.skku.inho.colorize.Keys;
+import edu.skku.inho.colorize.R;
 
 
 /**

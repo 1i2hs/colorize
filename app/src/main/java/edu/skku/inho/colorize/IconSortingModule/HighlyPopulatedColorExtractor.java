@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize;
+package edu.skku.inho.colorize.IconSortingModule;
 
 import android.support.v7.graphics.Palette;
 
@@ -25,7 +25,7 @@ public class HighlyPopulatedColorExtractor {
 
 		Collections.sort(tempSwatches, mSwatchColorPopulationComparator);
 
-		Palette.Swatch highlyPopulatedColorSwatch = swatches.get(0);
+		Palette.Swatch highlyPopulatedColorSwatch = tempSwatches.get(0);
 
 		double[] CIELab = RGBToCIELabConverter.convertRGBToLab(highlyPopulatedColorSwatch.getRgb());
 

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
-    tools:context="edu.skku.inho.colorize.MainActivity">
+    tools:context=".LockScreenPage.MainActivity">
 
     <!--<TextView
         android:layout_width="wrap_content"
@@ -21,7 +21,7 @@
         android:textSize="80dp"
         android:textColor="@color/colorTernaryText"/>-->
 
-    <edu.skku.inho.colorize.DigitalClock
+    <edu.skku.inho.colorize.LockScreenPage.DigitalClock
         android:id="@+id/textView_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:textSize="80dp"
         custom:dateFormat="time"/>
 
-    <edu.skku.inho.colorize.DigitalClock
+    <edu.skku.inho.colorize.LockScreenPage.DigitalClock
         android:id="@+id/textView_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         android:layout_marginTop="32dp"
         android:background="@drawable/layerlist_select_circle"/>
 
-    <edu.skku.inho.colorize.RoundColorView
+    <edu.skku.inho.colorize.RoundView
         android:id="@+id/view_first_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -64,7 +64,7 @@
         android:clickable="true"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundColorView
+    <edu.skku.inho.colorize.RoundView
         android:id="@+id/view_second_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -77,7 +77,7 @@
         android:background="@drawable/shape_color_circle_background"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundColorView
+    <edu.skku.inho.colorize.RoundView
         android:id="@+id/view_third_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -89,7 +89,7 @@
         android:background="@drawable/shape_color_circle_background"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundColorView
+    <edu.skku.inho.colorize.RoundView
         android:id="@+id/view_fourth_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -101,7 +101,7 @@
         android:background="@drawable/shape_color_circle_background"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundColorView
+    <edu.skku.inho.colorize.RoundView
         android:id="@+id/view_fifth_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -112,7 +112,7 @@
         android:background="@drawable/shape_color_circle_background"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundColorView
+    <edu.skku.inho.colorize.RoundView
         android:id="@+id/view_sixth_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -124,7 +124,7 @@
         android:background="@drawable/shape_color_circle_background"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundColorView
+    <edu.skku.inho.colorize.RoundView
         android:id="@+id/view_seventh_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -136,7 +136,7 @@
         android:background="@drawable/shape_color_circle_background"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundColorView
+    <edu.skku.inho.colorize.RoundView
         android:id="@+id/view_eighth_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -147,5 +147,81 @@
         android:layout_toLeftOf="@+id/view_first_color_circle"
         android:background="@drawable/shape_color_circle_background"
         android:elevation="4dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        tools:context=".LockScreenPage.MainActivity">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <edu.skku.inho.colorize.RoundView
+                android:id="@+id/view_first_shortcut_app"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_color_circle_background"
+                android:elevation="4dp"
+                android:visibility="invisible"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+
+            <edu.skku.inho.colorize.RoundView
+                android:id="@+id/view_second_shortcut_app"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_color_circle_background"
+                android:elevation="4dp"
+                android:visibility="invisible"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <edu.skku.inho.colorize.RoundView
+                android:id="@+id/view_third_shortcut_app"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_color_circle_background"
+                android:elevation="4dp"
+                android:visibility="invisible"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <edu.skku.inho.colorize.RoundView
+                android:id="@+id/view_fourth_shortcut_app"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_color_circle_background"
+                android:elevation="4dp"
+                android:visibility="invisible"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

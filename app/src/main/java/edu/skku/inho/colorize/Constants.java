@@ -13,6 +13,13 @@ public class Constants {
 	public static final int GROUPING_WITH_FIXED_COLOR_MODE = 1;
 	public static final int GROUPING_WITH_VARIABLE_COLOR_MODE = 2;
 
+	public static final int FIRST_APPLICATION_SHORTCUT = 0;
+	public static final int SECOND_APPLICATION_SHORTCUT = 1;
+	public static final int THIRD_APPLICATION_SHORTCUT = 2;
+	public static final int FOURTH_APPLICATION_SHORTCUT = 3;
+	public static final int NUMBER_OF_APPLICATION_SHORTCUTS = 4;
+
+
 	/**
 	 * constants for number of group colors
 	 */
@@ -31,4 +38,7 @@ public class Constants {
 	 * constants for update service
 	 */
 	public static final int UPDATE_SERVICE_DESTROYED = 1;
+
+	public static final int LAUNCH_APPLICATION_MODE = 1;
+	public static final int SELECT_SHORTCUT_APPLICATION_MODE = 2;
 }

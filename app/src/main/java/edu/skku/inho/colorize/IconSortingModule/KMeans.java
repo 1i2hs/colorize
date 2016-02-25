@@ -1,9 +1,13 @@
-package edu.skku.inho.colorize;
+package edu.skku.inho.colorize.IconSortingModule;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.skku.inho.colorize.LockScreenDataProvider;
+import edu.skku.inho.colorize.Constants;
 
 /**
  * Created by XEiN on 2/12/16.
@@ -24,9 +28,9 @@ public class KMeans {
 	}
 
 	//Initializes the process
-	public void init() {
+	public void init(Context context) {
 		//Create Groups
-		NUM_CLUSTERS = ApplicationListProvider.getInstance().getNumberOfGroupColors();
+		NUM_CLUSTERS = LockScreenDataProvider.getInstance(context).getNumberOfGroupColors();
 
 		//Set Random Centroids
 		for (int i = 0; i < NUM_CLUSTERS; i++) {

@@ -4,7 +4,7 @@
                 android:layout_height="match_parent"
                 android:background="#99000000"
                 android:elevation="6dp"
-                tools:context="edu.skku.inho.colorize.ApplicationListFragment">
+                tools:context=".ApplicationListDialog.ApplicationListFragment">
 
     <TextView
         android:id="@+id/textView_guide_text"

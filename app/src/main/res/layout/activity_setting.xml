@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     android:id="@+id/relativeLayout_base"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,174 +7,261 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:clipToPadding="false"
-    tools:context="edu.skku.inho.colorize.SettingActivity">
+    tools:context=".SettingPage.SettingActivity">
 
-    <ImageView
-        android:id="@+id/imageView_brand_icon"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="56dp"
-        android:src="@mipmap/ic_launcher"
-        android:transitionName="brandIcon"/>
-
-    <TextView
-        android:id="@+id/textView_mode_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView_brand_icon"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="32dp"
-        android:paddingLeft="8dp"
-        android:text="@string/group_mode_title"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"/>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView_grouping_mode_setting"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
+        android:id="@+id/layout_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView_mode_title"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        card_view:cardCornerRadius="4dp"
-        card_view:cardElevation="4dp"
-        card_view:contentPadding="16dp">
+        android:orientation="vertical">
 
-        <RadioGroup
-            android:id="@+id/radioGroup_grouping_mode_setting"
+        <ImageView
+            android:id="@+id/imageView_brand_icon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="56dp"
+            android:src="@mipmap/ic_launcher"
+            android:transitionName="brandIcon"/>
+
+        <TextView
+            android:id="@+id/textView_mode_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="32dp"
+            android:paddingLeft="8dp"
+            android:text="@string/group_mode_title"
+            android:textColor="@android:color/white"
+            android:textSize="16dp"/>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView_grouping_mode_setting"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true">
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardElevation="4dp"
+            card_view:contentPadding="16dp">
 
-            <RadioButton
-                android:id="@+id/radioButton_fixed_color_grouping_mode"
+            <RadioGroup
+                android:id="@+id/radioGroup_grouping_mode_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/grouping_with_fixed_color_mode"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="16dp"/>
+                android:layout_centerHorizontal="true">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorDivider">
-            </FrameLayout>
-
-            <RadioButton
-                android:id="@+id/radioButton_variable_color_grouping_mode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/grouping_with_variable_color_mode"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="16dp"/>
-
-        </RadioGroup>
-    </android.support.v7.widget.CardView>
-
-    <TextView
-        android:id="@+id/textView_general_setting_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cardView_grouping_mode_setting"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:paddingLeft="8dp"
-        android:text="@string/general_setting_title"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"/>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView_general_setting"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView_general_setting_title"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        card_view:cardCornerRadius="4dp"
-        card_view:cardElevation="4dp"
-        card_view:contentPadding="16dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:id="@+id/relativeLayout_application_list_change_check_period_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/textView_application_list_change_check_period_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:text="@string/application_list_change_checking_period"
+                <RadioButton
+                    android:id="@+id/radioButton_fixed_color_grouping_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/grouping_with_fixed_color_mode"
                     android:textColor="@color/colorPrimaryText"
-                    android:textSize="16sp"/>
+                    android:textSize="16dp"/>
 
-                <TextView
-                    android:id="@+id/textView_application_list_change_check_period"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:text="30초"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp"/>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/colorDivider">
+                </FrameLayout>
 
-            </RelativeLayout>
+                <RadioButton
+                    android:id="@+id/radioButton_variable_color_grouping_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:text="@string/grouping_with_variable_color_mode"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="16dp"/>
 
-        </LinearLayout>
+            </RadioGroup>
+        </android.support.v7.widget.CardView>
 
-    </android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/textView_general_setting_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="8dp"
+            android:text="@string/general_setting_title"
+            android:textColor="@android:color/white"
+            android:textSize="16dp"/>
 
-    <Button
-        android:id="@+id/button_start_application"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textView_stop_application"
-        android:layout_alignParentBottom="false"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/default_enabled_button_background"
-        android:text="@string/start_application"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"/>
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView_general_setting"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardElevation="4dp"
+            card_view:contentPadding="16dp">
 
-    <TextView
-        android:id="@+id/textView_stop_application"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/frameLayout_underline_stop_application"
-        android:layout_centerHorizontal="true"
-        android:clickable="true"
-        android:text="@string/stop_application"
-        android:textColor="@color/colorDivider"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/frameLayout_underline_stop_application"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_alignLeft="@+id/textView_stop_application"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/textView_stop_application"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="24dp"
-        android:layout_marginTop="4dp"
-        android:background="@color/colorDivider">
-    </FrameLayout>
+                <RelativeLayout
+                    android:id="@+id/relativeLayout_application_list_change_check_period_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical">
 
+                    <TextView
+                        android:id="@+id/textView_application_list_change_check_period_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:text="@string/application_list_change_checking_period"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="16dp"/>
 
-</RelativeLayout>
+                    <TextView
+                        android:id="@+id/textView_application_list_change_check_period"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:text="30초"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp"/>
+
+                </RelativeLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/colorDivider">
+                </FrameLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Switch
+                        android:id="@+id/switch_application_shortcuts_usage"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_alignParentEnd="false"
+                        android:text="@string/application_shortcuts_usage"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="16dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout_application_shortcuts"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_below="@+id/switch_application_shortcuts_usage"
+                        android:orientation="horizontal"
+                        android:weightSum="4">
+
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <edu.skku.inho.colorize.RoundView
+                                android:id="@+id/view_first_shortcut_app"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/ic_add_circle_outline_black_48dp"
+                                android:elevation="4dp"/>
+
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <edu.skku.inho.colorize.RoundView
+                                android:id="@+id/view_second_shortcut_app"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/ic_add_circle_outline_black_48dp"
+                                android:elevation="4dp"/>
+
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <edu.skku.inho.colorize.RoundView
+                                android:id="@+id/view_third_shortcut_app"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/ic_add_circle_outline_black_48dp"
+                                android:elevation="4dp"/>
+
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <edu.skku.inho.colorize.RoundView
+                                android:id="@+id/view_fourth_shortcut_app"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/ic_add_circle_outline_black_48dp"
+                                android:elevation="4dp"/>
+
+                        </FrameLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <Button
+            android:id="@+id/button_start_application"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="48dp"
+            android:background="@drawable/default_enabled_button_background"
+            android:text="@string/start_lock_screen"
+            android:textColor="@android:color/white"
+            android:textSize="16dp"/>
+
+        <Button
+            android:id="@+id/button_stop_application"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="32dp"
+            android:layout_marginTop="32dp"
+            android:background="@null"
+            android:clickable="true"
+            android:text="@string/stop_lock_screen"
+            android:textColor="@color/colorDivider"
+            android:textSize="14dp"/>
+
+    </LinearLayout>
+
+</ScrollView>

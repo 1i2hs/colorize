@@ -6,7 +6,6 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -16,28 +15,32 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
-import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.graphics.Palette;
 import android.util.Log;
+import android.util.TypedValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import edu.skku.inho.colorize.IconSortingModule.Color;
+import edu.skku.inho.colorize.IconSortingModule.DrawableToBitmapConverter;
+import edu.skku.inho.colorize.IconSortingModule.GroupColor;
+import edu.skku.inho.colorize.IconSortingModule.HighlyPopulatedColorExtractor;
+import edu.skku.inho.colorize.IconSortingModule.KMeans;
+import edu.skku.inho.colorize.IconSortingModule.RGBToCIELabConverter;
+import edu.skku.inho.colorize.SettingPage.SettingActivity;
+
 public class UpdateService extends Service {
 	private static final String TAG = "UpdateService";
-
-	private int mApplicationListChangeCheckingPeriod;
 
 	private int[] mFixedGroupColorIds = {R.color.fixed_color_one, R.color.fixed_color_two, R.color.fixed_color_three, R.color.fixed_color_four, R.color.fixed_color_five, R.color.fixed_color_six, R.color.fixed_color_seven, R.color.fixed_color_eight};
 
 	private boolean mIsGroupingWithFixedColorModeInitialized = true;
 
 	private int mGroupingMode = -1;
-
-	private SharedPreferences mSharedPreferences;
 
 	private BroadcastReceiver mScreenStateReceiver;
 
@@ -53,28 +56,31 @@ public class UpdateService extends Service {
 			// notify SettingActivity that color computing is finished
 			sendColorDataReadyStateMessage();
 
-			mSharedPreferences.edit().putBoolean(Keys.IS_COLOR_DATA_READY, true).apply();
+			//mSharedPreferences.edit().putBoolean(Keys.IS_COLOR_DATA_READY, true).apply();
+			LockScreenDataProvider.getInstance(UpdateService.this).setIsColorDataReady(true);
 
 			// check all applications' installation state every N seconds
-			mUpdateHandler.postDelayed(mGroupingWithFixedColorModeRunnable, mApplicationListChangeCheckingPeriod);
+			mUpdateHandler.postDelayed(mGroupingWithFixedColorModeRunnable, computeApplicationListChangeCheckingPeriod());
 		}
 	};
 	private Runnable mGroupingWithVariableColorModeRunnable = new Runnable() {
 		@Override
 		public void run() {
 			Log.i(TAG, "variable color grouping mode is enabled...");
-			mSharedPreferences.edit().putBoolean(Keys.IS_COLOR_DATA_READY, false).apply();
+			//mSharedPreferences.edit().putBoolean(Keys.IS_COLOR_DATA_READY, false).apply();
+			LockScreenDataProvider.getInstance(UpdateService.this).setIsColorDataReady(false);
 
 			// begin computing 8 colors;
-			ApplicationListProvider.getInstance().setGroupColorList(makeGroupColorList());
+			LockScreenDataProvider.getInstance(UpdateService.this).setGroupColorList(makeGroupColorList());
 
 			// notify SettingActivity that color computing is finished
 			sendColorDataReadyStateMessage();
 
-			mSharedPreferences.edit().putBoolean(Keys.IS_COLOR_DATA_READY, true).apply();
+			//mSharedPreferences.edit().putBoolean(Keys.IS_COLOR_DATA_READY, true).apply();
+			LockScreenDataProvider.getInstance(UpdateService.this).setIsColorDataReady(true);
 
 			// check all applications' installation state every N seconds
-			mUpdateHandler.postDelayed(mGroupingWithVariableColorModeRunnable, mApplicationListChangeCheckingPeriod);
+			mUpdateHandler.postDelayed(mGroupingWithVariableColorModeRunnable, computeApplicationListChangeCheckingPeriod());
 		}
 	};
 
@@ -127,11 +133,11 @@ public class UpdateService extends Service {
 				}
 			}
 		}
-		for(GroupColor groupColor : groupColorList) {
+		for (GroupColor groupColor : groupColorList) {
 			groupColor.setApplicationList(sortApplicationInAlphabeticalOrder(groupColor.getApplicationList()));
 		}
 
-		ApplicationListProvider.getInstance().setGroupColorList(groupColorList);
+		LockScreenDataProvider.getInstance(this).setGroupColorList(groupColorList);
 	}
 
 	private double computeEuclideanDistanceBetweenTwoColors(GroupColor groupColor, Color extractedColor) {
@@ -140,6 +146,12 @@ public class UpdateService extends Service {
 				Math.pow((groupColor.getCIELabColor()[2] - extractedColor.getB()), 2));
 	}
 
+	/**
+	 * must be merged with equal method in splash activity
+	 *
+	 * @param applicationList
+	 * @return
+	 */
 	private ArrayList<ApplicationInfoBundle> sortApplicationInAlphabeticalOrder(ArrayList<ApplicationInfoBundle> applicationList) {
 		Collections.sort(applicationList, new Comparator<ApplicationInfoBundle>() {
 			@Override
@@ -158,8 +170,6 @@ public class UpdateService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
 		if (intent != null) {
 			if (intent.getAction() == null) {
 				if (mScreenStateReceiver == null) {
@@ -169,7 +179,7 @@ public class UpdateService extends Service {
 		}
 
 		configureGroupingMode(intent);
-		configureApplicationListChangeCheckingPeriod();
+		//configureApplicationListChangeCheckingPeriod();
 
 		// start thread for color analyzing
 		HandlerThread updateHandlerThread = new HandlerThread("UpdateColorData", Process.THREAD_PRIORITY_BACKGROUND);
@@ -178,7 +188,8 @@ public class UpdateService extends Service {
 		startForeground(1, getNotification());
 		addHandlerToHandlerThread(updateHandlerThread);
 
-		mSharedPreferences.edit().putBoolean(Keys.IS_LOCK_SCREEN_RUNNING, true).apply();
+		//mSharedPreferences.edit().putBoolean(Keys.IS_LOCK_SCREEN_RUNNING, true).apply();
+		LockScreenDataProvider.getInstance(this).setIsLockScreenRunning(true);
 
 		return START_REDELIVER_INTENT;
 	}
@@ -188,15 +199,18 @@ public class UpdateService extends Service {
 		Log.d(TAG, "Service on destroy...");
 		// remove appropriate runnable of each mode from handler
 		if (mGroupingMode == Constants.GROUPING_WITH_FIXED_COLOR_MODE) {
+			Log.d(TAG, "fixed_color_mode_terminated");
 			mUpdateHandler.removeCallbacks(mGroupingWithFixedColorModeRunnable);
 		} else {
+			Log.d(TAG, "variable_color_mode_terminated");
 			mUpdateHandler.removeCallbacks(mGroupingWithVariableColorModeRunnable);
 		}
 
 		sendFinishMessage();
 
 		// save stopped lock screen running state into shared preferences
-		mSharedPreferences.edit().putBoolean(Keys.IS_LOCK_SCREEN_RUNNING, false).apply();
+		//mSharedPreferences.edit().putBoolean(Keys.IS_LOCK_SCREEN_RUNNING, false).apply();
+		LockScreenDataProvider.getInstance(this).setIsLockScreenRunning(false);
 
 		unregisterReceiver(mScreenStateReceiver);
 
@@ -220,18 +234,20 @@ public class UpdateService extends Service {
 		if (intent != null) {
 			mGroupingMode = intent.getIntExtra(Keys.GROUPING_MODE, Constants.GROUPING_WITH_FIXED_COLOR_MODE);
 		} else {
-			mGroupingMode = mSharedPreferences.getInt(Keys.GROUPING_MODE, Constants.GROUPING_WITH_FIXED_COLOR_MODE);
+			//mGroupingMode = mSharedPreferences.getInt(Keys.GROUPING_MODE, Constants.GROUPING_WITH_FIXED_COLOR_MODE);
+			mGroupingMode = LockScreenDataProvider.getInstance(this).getGroupingMode();
 		}
 		Log.i(TAG, "Grouping mode : " + mGroupingMode);
 	}
 
-	private void configureApplicationListChangeCheckingPeriod() {
-		mApplicationListChangeCheckingPeriod = getResources().getIntArray(R.array.application_list_change_checking_period_seconds)[mSharedPreferences
-				.getInt(Keys.CHECKING_PERIOD_INDEX, Constants.DEFAULT_APPLICATION_LIST_CHANGE_CHECKING_PERIOD_TIME_INDEX)] * 1000;
-	}
-
 	private Notification getNotification() {
 		String contentTitle = getResources().getString(R.string.colorize_running);
+
+		if (mGroupingMode == Constants.GROUPING_WITH_FIXED_COLOR_MODE) {
+			contentTitle += getResources().getString(R.string.grouping_with_fixed_color_mode_running);
+		} else {
+			contentTitle += getResources().getString(R.string.grouping_with_variable_color_mode_running);
+		}
 
 		Notification.Builder builder = new Notification.Builder(this).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(contentTitle)
 				.setContentText(getResources().getString(R.string.click_to_configure_colorize));
@@ -257,6 +273,11 @@ public class UpdateService extends Service {
 		registerReceiver(mScreenStateReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 	}
 
+	private int computeApplicationListChangeCheckingPeriod() {
+		return getResources().getIntArray(R.array.application_list_change_checking_period_seconds)[LockScreenDataProvider.getInstance(this)
+				.getApplicationListChangeCheckingPeriodChoiceIndex()] * 1000;
+	}
+
 	private void sendColorDataReadyStateMessage() {
 		Log.d(TAG, "sending color data ready state message...");
 		Intent intent = new Intent(Keys.UPDATE_SERVICE_BROADCAST);
@@ -274,9 +295,9 @@ public class UpdateService extends Service {
 
 	private List<KMeans.Group> groupExtractedColorPointsIntoEightColorPoints(ArrayList<Color> extractedColorList) {
 		Log.i(TAG, ">>> Starting color grouping...");
-		//KMeans kMeans = new KMeans(ApplicationListProvider.getInstance().getExtractedColorPointList());
+		//KMeans kMeans = new KMeans(LockScreenDataProvider.getInstance().getExtractedColorPointList());
 		KMeans kMeans = new KMeans(extractedColorList);
-		kMeans.init();
+		kMeans.init(this);
 		kMeans.calculate();
 		Log.i(TAG, ">>> Grouping colors completed");
 		return kMeans.getGroups();
@@ -285,7 +306,7 @@ public class UpdateService extends Service {
 	private ArrayList<Color> makeExtractedColorPointList(List<ResolveInfo> applicationResolveInfoList) {
 		ArrayList<ApplicationInfoBundle> applicationList = new ArrayList<>();
 		ArrayList<Color> extractedColorList = new ArrayList<>();
-		int allocatedMemorySize = 0;
+		int drawableSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, getResources().getDisplayMetrics());
 
 		for (ResolveInfo resolveInfo : applicationResolveInfoList) {
 			ApplicationInfo temp = resolveInfo.activityInfo.applicationInfo;
@@ -293,18 +314,18 @@ public class UpdateService extends Service {
 
 			Drawable tempDrawable = temp.loadIcon(getPackageManager());
 			applicationInfoBundle.setApplicationIcon(tempDrawable);
+			applicationInfoBundle.setApplicationPackageName(temp.packageName);
 			applicationInfoBundle.setApplicationName(temp.loadLabel(getPackageManager()).toString());
-			applicationInfoBundle.setIntentForPackage(getPackageManager().getLaunchIntentForPackage(temp.packageName));
-			extractSevenColors(Palette.from(DrawableToBitmapConverter.convertToBitmap(tempDrawable)).generate(),
+			//applicationInfoBundle.setIntentForPackage(getPackageManager().getLaunchIntentForPackage(temp.packageName));
+			extractSevenColors(Palette.from(DrawableToBitmapConverter.convertToBitmap(tempDrawable, drawableSize, drawableSize)).generate(),
 					applicationInfoBundle,
 					extractedColorList);
 
 			applicationList.add(applicationInfoBundle);
 		}
 
-		Log.i(TAG, ">>> Total memory allocated: " + allocatedMemorySize + " bytes");
 		Log.i(TAG, ">>> Number of applications installed: " + applicationList.size());
-		ApplicationListProvider.getInstance().setApplicationList(applicationList);
+		LockScreenDataProvider.getInstance(this).setApplicationList(applicationList);
 		return extractedColorList;
 	}
 
@@ -347,43 +368,47 @@ public class UpdateService extends Service {
 		Palette.Swatch lightMutedSwatch = palette.getLightMutedSwatch();
 		Palette.Swatch darkMutedSwatch = palette.getDarkMutedSwatch();
 
-		//Log.i(TAG, ">> Starting extracting seven colors from app: " + applicationInfoBundle.getApplicationName());
+		Log.i(TAG, ">> Starting extracting seven colors from app: " + applicationInfoBundle.getApplicationName());
 
 		if (vibrantSwatch != null) {
-			//Log.i(TAG, "Extracting vibrant color...");
+			Log.i(TAG, "Extracting vibrant color...");
 			extractedColorList.add(makeExtractedColorPoint(vibrantSwatch, applicationInfoBundle));
 		}
 
 		if (lightVibrantSwatch != null) {
-			//Log.i(TAG, "Extracting light vibrant color...");
+			Log.i(TAG, "Extracting light vibrant color...");
 			extractedColorList.add(makeExtractedColorPoint(lightVibrantSwatch, applicationInfoBundle));
 		}
 
 		if (darkVibrantSwatch != null) {
-			//Log.i(TAG, "Extracting dark vibrant color..");
+			Log.i(TAG, "Extracting dark vibrant color..");
 			extractedColorList.add(makeExtractedColorPoint(darkVibrantSwatch, applicationInfoBundle));
 		}
 
 		if (mutedSwatch != null) {
-			//Log.i(TAG, "Extracting muted color...");
+			Log.i(TAG, "Extracting muted color...");
 			extractedColorList.add(makeExtractedColorPoint(mutedSwatch, applicationInfoBundle));
 		}
 
 		if (lightMutedSwatch != null) {
-			//Log.i(TAG, "Extracting light muted color...");
+			Log.i(TAG, "Extracting light muted color...");
 			extractedColorList.add(makeExtractedColorPoint(lightMutedSwatch, applicationInfoBundle));
 		}
 
 		if (darkMutedSwatch != null) {
-			//Log.i(TAG, "Extracting dark muted color...");
+			Log.i(TAG, "Extracting dark muted color...");
 			extractedColorList.add(makeExtractedColorPoint(darkMutedSwatch, applicationInfoBundle));
 		}
 
 		//Log.i(TAG, "Extracting highly populated color...");
-		Color color = HighlyPopulatedColorExtractor.extractHighlyPopulatedColor(palette.getSwatches());
-		color.setApplicationInfoBundle(applicationInfoBundle);
-		extractedColorList.add(color);
-
+		if (palette.getSwatches().size() > 0) {
+			Log.d(TAG, applicationInfoBundle.getApplicationName());
+			Color color = HighlyPopulatedColorExtractor.extractHighlyPopulatedColor(palette.getSwatches());
+			color.setApplicationInfoBundle(applicationInfoBundle);
+			extractedColorList.add(color);
+		} else {
+			Log.d(TAG, "Failed to extract color : " + applicationInfoBundle.getApplicationName());
+		}
 		//Log.i(TAG, ">> Extraction completed");
 	}
 

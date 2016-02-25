@@ -1,6 +1,5 @@
 package edu.skku.inho.colorize;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 
 
@@ -10,7 +9,7 @@ import android.graphics.drawable.Drawable;
 public class ApplicationInfoBundle {
 	private Drawable mApplicationIcon;
 	private String mApplicationName;
-	private Intent mIntentForPackage;
+	private String mApplicationPackageName;
 
 
 	public String getApplicationName() {
@@ -21,13 +20,6 @@ public class ApplicationInfoBundle {
 		mApplicationName = applicationName;
 	}
 
-	public Intent getIntentForPackage() {
-		return mIntentForPackage;
-	}
-
-	public void setIntentForPackage(Intent intentForPackage) {
-		mIntentForPackage = intentForPackage;
-	}
 
 	/*public int getSize() {
 		return mApplicationIcon.getAllocationByteCount();
@@ -40,5 +32,14 @@ public class ApplicationInfoBundle {
 
 	public void setApplicationIcon(Drawable applicationIcon) {
 		mApplicationIcon = applicationIcon;
+	}
+
+
+	public String getApplicationPackageName() {
+		return mApplicationPackageName;
+	}
+
+	public void setApplicationPackageName(String applicationPackageName) {
+		mApplicationPackageName = applicationPackageName;
 	}
 }

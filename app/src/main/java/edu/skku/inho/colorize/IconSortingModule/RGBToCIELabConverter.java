@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize;
+package edu.skku.inho.colorize.IconSortingModule;
 
 import android.graphics.Color;
 

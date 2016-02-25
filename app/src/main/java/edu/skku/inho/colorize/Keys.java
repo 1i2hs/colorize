@@ -10,17 +10,16 @@ public class Keys {
 	 * key for shared preference in setting page(@link SettingActivity)
 	 */
 	public static final String GROUPING_MODE = "edu.skku.inho.colorize.grouping_mode";
+	public static final String CHECKING_PERIOD_INDEX = "edu.skku.inho.colorize.checking_period_index";
+	public static final String APPLICATION_SHORTCUTS_USAGE = "edu.skku.inho.colorize.application_shortcuts_usage";
+	public static final String FIRST_APPLICATION_SHORTCUT_PACKAGE_NAME = "edu.skku.inho.colorize.first_application_shortcut_package_name";
+	public static final String SECOND_APPLICATION_SHORTCUT_PACKAGE_NAME = "edu.skku.inho.colorize.second_application_shortcut_package_name";
+	public static final String THIRD_APPLICATION_SHORTCUT_PACKAGE_NAME = "edu.skku.inho.colorize.third_application_shortcut_package_name";
+	public static final String FOURTH_APPLICATION_SHORTCUT_PACKAGE_NAME = "edu.skku.inho.colorize.fourth_application_shortcut_package_name";
 
-	/**
-	 * key for intent in setting page
-	 */
-	public static final String IS_LOCK_SCREEN_RUNNING = "edu.skku.inho.colorize.is_lock_screen_running";
-
-	/**
-	 * key for shared preference in lock screen page(@link MainActivity)
-	 */
-	public static final String IS_COLOR_DATA_READY = "edu.skku.inho.colorize.is_color_data_ready";
-
+	public static final String SELECTED_COLOR = "edu.skku.inho.colorize.selected_color";
+	public static final String CLICKED_VIEW_RES_ID = "edu.skku.inho.colorize.clicked_view_res_id";
+	public static final String APPLICATION_SELECTION_MODE = "edu.skku.inho.colorize.application_selection_mode";
 	/**
 	 * keys for intent in update service
 	 */
@@ -29,8 +28,4 @@ public class Keys {
 	// action
 	public static final String UPDATE_SERVICE_MESSAGE = "edu.skku.inho.colorize.update_service_message";
 
-	/**
-	 * key for application list change checking period in setting page
-	 */
-	public static final String CHECKING_PERIOD_INDEX = "edu.skku.inho.colorize.checking_period_index";
 }

@@ -1,19 +1,17 @@
-package edu.skku.inho.colorize;
+package edu.skku.inho.colorize.LockScreenPage;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -26,14 +24,23 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements ApplicationListFragment.OnApplicationListFragmentInteraction {
+import edu.skku.inho.colorize.ApplicationInfoBundle;
+import edu.skku.inho.colorize.ApplicationListDialog.ApplicationListFragment;
+import edu.skku.inho.colorize.Constants;
+import edu.skku.inho.colorize.IconSortingModule.GroupColor;
+import edu.skku.inho.colorize.Keys;
+import edu.skku.inho.colorize.LockScreenDataProvider;
+import edu.skku.inho.colorize.R;
+import edu.skku.inho.colorize.RoundView;
+
+public class MainActivity extends AppCompatActivity implements ApplicationListFragment.OnApplicationListFragmentInteraction, View.OnClickListener {
 	private final static String TAG = "MainActivity";
 
 	private View mSelectionCircleView;
 
 	private IconDragEventListener mIconDragEventListener;
 
-	private SharedPreferences mSharedPreferences;
+	private ApplicationInfoBundle[] mApplicationShortcut = new ApplicationInfoBundle[4];
 
 	private BroadcastReceiver mServiceStateReceiver = new BroadcastReceiver() {
 		@Override
@@ -42,7 +49,10 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 			if (messageFlag == Constants.COLOR_DATA_READY) {
 				configureColorCircles();
 				configureSelectionCircle();
-			} else if (messageFlag == Constants.UPDATE_SERVICE_DESTROYED) {
+				configureApplicationShortcuts();
+			}
+
+			if (messageFlag == Constants.UPDATE_SERVICE_DESTROYED) {
 				finish();
 			}
 		}
@@ -53,16 +63,16 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 
 		LocalBroadcastManager.getInstance(this).registerReceiver(mServiceStateReceiver, new IntentFilter(Keys.UPDATE_SERVICE_BROADCAST));
 
 		// check whether the computed color data is ready
-		if (mSharedPreferences.getBoolean(Keys.IS_COLOR_DATA_READY, false) && mSharedPreferences.getBoolean(Keys.IS_LOCK_SCREEN_RUNNING, false)) {
+		//if (mSharedPreferences.getBoolean(Keys.IS_COLOR_DATA_READY, false) && mSharedPreferences.getBoolean(Keys.IS_LOCK_SCREEN_RUNNING, false)) {
+		if (LockScreenDataProvider.getInstance(this).isColorDataReady() && LockScreenDataProvider.getInstance(this).isLockScreenRunning()) {
 			configureColorCircles();
 			configureSelectionCircle();
+			configureApplicationShortcuts();
 		} else {
 			// this branch is passed when the UpdateService has been stopped abnormally
 			Toast.makeText(this, R.string.update_service_not_running, Toast.LENGTH_LONG).show();
@@ -83,42 +93,42 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	 * color circle images is touched.
 	 */
 	protected void configureColorCircles() {
-		ArrayList<GroupColor> groupColorPointList = ApplicationListProvider.getInstance().getGroupColorList();
+		ArrayList<GroupColor> groupColorPointList = LockScreenDataProvider.getInstance(this).getGroupColorList();
 		Log.d(TAG, groupColorPointList.toString());
 		for (int i = 0; i < 8; i++) {
-			RoundColorView colorCircle;
+			RoundView colorCircle;
 
 			switch (i) {
 				case 0:
-					colorCircle = (RoundColorView) findViewById(R.id.view_first_color_circle);
+					colorCircle = (RoundView) findViewById(R.id.view_first_color_circle);
 					colorCircle.setTag(GroupColor.FIRST_COLOR);
 					break;
 				case 1:
-					colorCircle = (RoundColorView) findViewById(R.id.view_second_color_circle);
+					colorCircle = (RoundView) findViewById(R.id.view_second_color_circle);
 					colorCircle.setTag(GroupColor.SECOND_COLOR);
 					break;
 				case 2:
-					colorCircle = (RoundColorView) findViewById(R.id.view_third_color_circle);
+					colorCircle = (RoundView) findViewById(R.id.view_third_color_circle);
 					colorCircle.setTag(GroupColor.THIRD_COLOR);
 					break;
 				case 3:
-					colorCircle = (RoundColorView) findViewById(R.id.view_fourth_color_circle);
+					colorCircle = (RoundView) findViewById(R.id.view_fourth_color_circle);
 					colorCircle.setTag(GroupColor.FOURTH_COLOR);
 					break;
 				case 4:
-					colorCircle = (RoundColorView) findViewById(R.id.view_fifth_color_circle);
+					colorCircle = (RoundView) findViewById(R.id.view_fifth_color_circle);
 					colorCircle.setTag(GroupColor.FIFTH_COLOR);
 					break;
 				case 5:
-					colorCircle = (RoundColorView) findViewById(R.id.view_sixth_color_circle);
+					colorCircle = (RoundView) findViewById(R.id.view_sixth_color_circle);
 					colorCircle.setTag(GroupColor.SIXTH_COLOR);
 					break;
 				case 6:
-					colorCircle = (RoundColorView) findViewById(R.id.view_seventh_color_circle);
+					colorCircle = (RoundView) findViewById(R.id.view_seventh_color_circle);
 					colorCircle.setTag(GroupColor.SEVENTH_COLOR);
 					break;
 				case 7:
-					colorCircle = (RoundColorView) findViewById(R.id.view_eighth_color_circle);
+					colorCircle = (RoundView) findViewById(R.id.view_eighth_color_circle);
 					colorCircle.setTag(GroupColor.EIGHTH_COLOR);
 					break;
 				default:
@@ -149,20 +159,66 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 		});
 	}
 
+	protected void configureApplicationShortcuts() {
+		if (LockScreenDataProvider.getInstance(this).isUseApplicationShortcuts()) {
+			int[] viewResId = {R.id.view_first_shortcut_app, R.id.view_second_shortcut_app, R.id.view_third_shortcut_app, R.id.view_fourth_shortcut_app};
+
+			for (int i = 0; i < Constants.NUMBER_OF_APPLICATION_SHORTCUTS; i++) {
+				// case : if there is an application shortcut set for i-th position
+				if ((mApplicationShortcut[i] = LockScreenDataProvider.getInstance(this).getApplicationShortcut(i)) != null) {
+					View shortcutApplicationView = findViewById(viewResId[i]);
+					shortcutApplicationView.setVisibility(View.VISIBLE);
+					shortcutApplicationView.setBackground(mApplicationShortcut[i].getApplicationIcon());
+					shortcutApplicationView.setOnClickListener(this);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.view_first_shortcut_app:
+				startActivity(getPackageManager()
+						.getLaunchIntentForPackage(mApplicationShortcut[Constants.FIRST_APPLICATION_SHORTCUT].getApplicationPackageName()));
+				break;
+			case R.id.view_second_shortcut_app:
+				startActivity(getPackageManager()
+						.getLaunchIntentForPackage(mApplicationShortcut[Constants.SECOND_APPLICATION_SHORTCUT].getApplicationPackageName()));
+				break;
+			case R.id.view_third_shortcut_app:
+				startActivity(getPackageManager()
+						.getLaunchIntentForPackage(mApplicationShortcut[Constants.THIRD_APPLICATION_SHORTCUT].getApplicationPackageName()));
+				break;
+			case R.id.view_fourth_shortcut_app:
+				startActivity(getPackageManager()
+						.getLaunchIntentForPackage(mApplicationShortcut[Constants.FOURTH_APPLICATION_SHORTCUT].getApplicationPackageName()));
+				break;
+		}
+		finish();
+	}
+
 	@Override
 	public void onBackPressed() {
 		getSupportFragmentManager().popBackStack();
 	}
 
 	@Override
-	public void onFragmentInteraction(Uri uri) {
+	protected void onPause() {
+		super.onPause();
+		// code for blocking recent apps button click
+		ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+		activityManager.moveTaskToFront(getTaskId(), 0);
+	}
+
+	@Override
+	public void onClickApplicationIcon(String packageName, int clickedViewResId) {
 
 	}
 
 	private static class OnColorTouchListener implements View.OnTouchListener {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			Log.d(TAG, "onClick");
 			// Create a new ClipData.Item from the ImageView object's tag
 			ClipData.Item item = new ClipData.Item((String) v.getTag());
 
@@ -199,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 
 			// Creates a draggable image that will fill the Canvas provided by the system.
 			GradientDrawable gradientDrawable = (GradientDrawable) roundColorView.getContext().getDrawable(R.drawable.shape_color_circle);
-			gradientDrawable.setColor(((RoundColorView) roundColorView).getColor());
+			gradientDrawable.setColor(((RoundView) roundColorView).getColor());
 			shadow = gradientDrawable;
 		}
 
@@ -298,15 +354,11 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 					// Gets the text data from the item.
 					String selectedColor = item.getText().toString();
 
-					// Displays a message containing the dragged data.
-					Toast.makeText(v.getContext(), "Dragged data is " + selectedColor, Toast.LENGTH_SHORT).show();
-
-					// Turns off any color tints
-
 					// Invalidates the view to force a redraw
 					v.invalidate();
 
-					ApplicationListFragment applicationListFragment = ApplicationListFragment.newInstance(selectedColor);
+					ApplicationListFragment applicationListFragment = ApplicationListFragment
+							.newInstance(selectedColor, Constants.LAUNCH_APPLICATION_MODE);
 
 					FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 					fragmentTransaction.replace(R.id.layout_root, applicationListFragment, "application_list");

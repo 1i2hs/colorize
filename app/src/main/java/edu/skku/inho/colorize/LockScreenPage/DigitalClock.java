@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize;
+package edu.skku.inho.colorize.LockScreenPage;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import java.util.Calendar;
+
+import edu.skku.inho.colorize.R;
 
 /**
  * Created by XEiN on 2/20/16.
