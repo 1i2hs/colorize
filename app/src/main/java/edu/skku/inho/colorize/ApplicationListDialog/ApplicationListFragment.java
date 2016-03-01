@@ -189,8 +189,6 @@ public class ApplicationListFragment extends Fragment {
 
 		double diagonal1 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(mClickedViewY, 2));
 		double diagonal2 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(displayMetrics.heightPixels - mClickedViewY, 2));
-
-		//float finalRadius = mClickedViewY * 1.5F;
 		double finalRadius = Math.max(diagonal1, diagonal2);
 
 		Animator anim = ViewAnimationUtils
@@ -206,8 +204,6 @@ public class ApplicationListFragment extends Fragment {
 
 		double diagonal1 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(mClickedViewY, 2));
 		double diagonal2 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(displayMetrics.heightPixels - mClickedViewY, 2));
-
-		//float finalRadius = mClickedViewY * 1.5F;
 		double initialRadius = Math.max(diagonal1, diagonal2);
 
 		Animator anim = ViewAnimationUtils
