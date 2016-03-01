@@ -37,9 +37,6 @@ public class ScreenStateReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		//SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-		//if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF) && sharedPreferences.getBoolean(Keys.IS_COLOR_DATA_READY, true)) {
 		if (LockScreenDataProvider.getInstance(context).isColorDataReady()) {
 			/*if (mKeyguardManager == null)
 				mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
