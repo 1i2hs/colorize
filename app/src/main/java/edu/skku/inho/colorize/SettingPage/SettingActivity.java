@@ -138,7 +138,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 			if ((mApplicationShortcuts[i] = lockScreenDataProvider.getApplicationShortcut(i)) != null) {
 				mApplicationShortcutIconRoundView[i].setBackground(mApplicationShortcuts[i].getApplicationIcon());
 			}
-			//mApplicationShortcutIconRoundView[i].setOnClickListener(this);
 			mApplicationShortcutIconRoundView[i].setOnTouchListener(new View.OnTouchListener() {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
