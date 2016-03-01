@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import edu.skku.inho.colorize.IconSortingModule.GroupColor;
+import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 
 /**
  * Created by XEiN on 2/11/16.

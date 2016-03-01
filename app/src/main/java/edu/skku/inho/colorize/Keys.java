@@ -20,6 +20,8 @@ public class Keys {
 	public static final String SELECTED_COLOR = "edu.skku.inho.colorize.selected_color";
 	public static final String CLICKED_VIEW_RES_ID = "edu.skku.inho.colorize.clicked_view_res_id";
 	public static final String APPLICATION_SELECTION_MODE = "edu.skku.inho.colorize.application_selection_mode";
+	public static final String CLICKED_VIEW_X_COORDINATE = "edu.skku.inho.colorize.clicked_view_x_coordinate";
+	public static final String CLICKED_VIEW_Y_COORDINATE = "edu.skku.inho.colorize.clicked_view_y_coordinate";
 	/**
 	 * keys for intent in update service
 	 */

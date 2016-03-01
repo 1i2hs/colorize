@@ -10,6 +10,9 @@ public class BootReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		throw new UnsupportedOperationException("Not yet implemented");
+		if (LockScreenDataProvider.getInstance(context).getGroupingMode() != Constants.GROUPING_MODE_NOT_SELECTED) {
+			Intent i = new Intent(context, UpdateService.class);
+			context.startService(i);
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize.IconSortingModule;
+package edu.skku.inho.colorize.IconGroupingModule;
 
 import android.support.v7.graphics.Palette;
 

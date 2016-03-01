@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize.IconSortingModule;
+package edu.skku.inho.colorize.IconGroupingModule;
 
 import java.util.Random;
 
@@ -11,7 +11,7 @@ public class Color {
 	private double mL = 0;
 	private double mA = 0;
 	private double mB = 0;
-	private int mClusterNumber = 0;
+	private int mGroupNumber = 0;
 
 	private ApplicationInfoBundle mApplicationInfoBundle;
 
@@ -59,12 +59,8 @@ public class Color {
 		return new Color(l, a, b);
 	}
 
-	public int getGroup() {
-		return mClusterNumber;
-	}
-
-	public void setGroup(int clusterNumber) {
-		mClusterNumber = clusterNumber;
+	public void setGroup(int groupNumber) {
+		mGroupNumber = groupNumber;
 	}
 
 	public ApplicationInfoBundle getApplicationInfoBundle() {

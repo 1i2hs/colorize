@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize.IconSortingModule;
+package edu.skku.inho.colorize.IconGroupingModule;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,8 +6,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.skku.inho.colorize.LockScreenDataProvider;
 import edu.skku.inho.colorize.Constants;
+import edu.skku.inho.colorize.LockScreenDataProvider;
 
 /**
  * Created by XEiN on 2/12/16.

@@ -4,8 +4,6 @@ import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
@@ -42,7 +40,7 @@ public class ScreenStateReceiver extends BroadcastReceiver {
 		//SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
 		//if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF) && sharedPreferences.getBoolean(Keys.IS_COLOR_DATA_READY, true)) {
-		if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF) && LockScreenDataProvider.getInstance(context).isColorDataReady()) {
+		if (LockScreenDataProvider.getInstance(context).isColorDataReady()) {
 			/*if (mKeyguardManager == null)
 				mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
 

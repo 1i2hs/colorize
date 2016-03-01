@@ -6,20 +6,30 @@
                 android:elevation="6dp"
                 tools:context=".ApplicationListDialog.ApplicationListFragment">
 
-    <TextView
-        android:id="@+id/textView_guide_text"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:gravity="center"
-        android:text="@string/guide_text_application_list"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView_application_list"
+    <LinearLayout
+        android:id="@+id/linearLayout_application_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textView_guide_text"
-        android:elevation="8dp"/>
+        android:layout_margin="16dp"
+        android:background="@drawable/shape_circular_corner_sheet"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/textView_guide_text"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:text="@string/guide_text_application_list"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="14sp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_application_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="8dp"/>
+    </LinearLayout>
 
 </RelativeLayout>

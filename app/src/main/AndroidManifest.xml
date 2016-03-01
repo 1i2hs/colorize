@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.REORDER_TASKS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
@@ -16,9 +15,8 @@
         android:theme="@style/ColorizeTheme">
         <activity
             android:name=".LockScreenPage.MainActivity"
-            android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:showOnLockScreen="true">
         </activity>
@@ -31,7 +29,6 @@
 
         <activity
             android:name=".SettingPage.SplashActivity"
-            android:finishOnTaskLaunch="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -41,13 +38,16 @@
         </activity>
         <activity
             android:name=".SettingPage.SettingActivity"
-            android:finishOnTaskLaunch="true">
+            android:screenOrientation="portrait">
         </activity>
 
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
         </receiver>
     </application>
 

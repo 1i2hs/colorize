@@ -3,9 +3,12 @@ package edu.skku.inho.colorize.SettingPage;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -48,6 +51,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 	private Button mStartApplicationButton;
 	private Button mStopApplicationButton;
 	private boolean mIsLockScreenRunning = false;
+
+	private int mTouchedX = 0;
+	private int mTouchedY = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,10 +137,23 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		for (int i = 0; i < Constants.NUMBER_OF_APPLICATION_SHORTCUTS; i++) {
 			if ((mApplicationShortcuts[i] = lockScreenDataProvider.getApplicationShortcut(i)) != null) {
 				mApplicationShortcutIconRoundView[i].setBackground(mApplicationShortcuts[i].getApplicationIcon());
-				mApplicationShortcutIconRoundView[i].setOnClickListener(this);
-			} else {
-				mApplicationShortcutIconRoundView[i].setOnClickListener(this);
 			}
+			//mApplicationShortcutIconRoundView[i].setOnClickListener(this);
+			mApplicationShortcutIconRoundView[i].setOnTouchListener(new View.OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					if (event.getAction() == MotionEvent.ACTION_DOWN) {
+						mTouchedX = (int) event.getRawX();
+						mTouchedY = (int) event.getRawY();
+						Log.d(TAG, "Touched x, y = " + mTouchedX + ", " + mTouchedY);
+					}
+
+					if (event.getAction() == MotionEvent.ACTION_UP) {
+						showShortcutSelectionApplicationListFragment(v);
+					}
+					return true;
+				}
+			});
 		}
 
 		// case : application shortcuts usage is already set before
@@ -203,8 +222,30 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		}
 	}
 
+	private void showShortcutSelectionApplicationListFragment(View clickedView) {
+		ApplicationListFragment applicationListFragment = ApplicationListFragment
+				.newInstance(clickedView.getId(), Constants.SELECT_SHORTCUT_APPLICATION_MODE, mTouchedX, mTouchedY);
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.add(android.R.id.content, applicationListFragment, "application_list_fragment");
+		fragmentTransaction.addToBackStack(null);
+		fragmentTransaction.commit();
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+			Fragment fragment;
+			if ((fragment = getSupportFragmentManager().findFragmentByTag("application_list_fragment")) != null) {
+				((ApplicationListFragment) fragment).concealApplicationListView();
+				return;
+			}
+		}
+		super.onBackPressed();
+	}
+
 	@Override
 	public void onClick(View v) {
+		Log.d(TAG, "onClick");
 		Intent updateServiceIntent;
 		switch (v.getId()) {
 			// case: starting/restarting lock screen
@@ -246,16 +287,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 				checkingPeriodChoiceDialogFragment.show(getSupportFragmentManager(), "checking_period_choice_dialog_fragment");
 				break;
 			case R.id.view_first_shortcut_app:
-				showShortcutSelectionApplicationListFragment(R.id.view_first_shortcut_app);
-				break;
 			case R.id.view_second_shortcut_app:
-				showShortcutSelectionApplicationListFragment(R.id.view_second_shortcut_app);
-				break;
 			case R.id.view_third_shortcut_app:
-				showShortcutSelectionApplicationListFragment(R.id.view_third_shortcut_app);
-				break;
 			case R.id.view_fourth_shortcut_app:
-				showShortcutSelectionApplicationListFragment(R.id.view_fourth_shortcut_app);
+				showShortcutSelectionApplicationListFragment(v);
 				break;
 		}
 	}
@@ -264,15 +299,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 		fragmentTransaction.add(android.R.id.content, InitializingSettingFragment.newInstance());
 		fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-		fragmentTransaction.commit();
-	}
-
-	private void showShortcutSelectionApplicationListFragment(int clickedResId) {
-		ApplicationListFragment applicationListFragment = ApplicationListFragment
-				.newInstance(clickedResId, Constants.SELECT_SHORTCUT_APPLICATION_MODE);
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.add(android.R.id.content, applicationListFragment);
-		fragmentTransaction.addToBackStack(null);
 		fragmentTransaction.commit();
 	}
 

@@ -1,6 +1,5 @@
 package edu.skku.inho.colorize.LockScreenPage;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -12,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import edu.skku.inho.colorize.ApplicationInfoBundle;
 import edu.skku.inho.colorize.ApplicationListDialog.ApplicationListFragment;
 import edu.skku.inho.colorize.Constants;
-import edu.skku.inho.colorize.IconSortingModule.GroupColor;
+import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 import edu.skku.inho.colorize.Keys;
 import edu.skku.inho.colorize.LockScreenDataProvider;
 import edu.skku.inho.colorize.R;
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate Lock Screen");
 		setContentView(R.layout.activity_main);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -81,6 +82,11 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	}
 
 	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(mServiceStateReceiver);
@@ -94,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	 */
 	protected void configureColorCircles() {
 		ArrayList<GroupColor> groupColorPointList = LockScreenDataProvider.getInstance(this).getGroupColorList();
-		Log.d(TAG, groupColorPointList.toString());
 		for (int i = 0; i < 8; i++) {
 			RoundView colorCircle;
 
@@ -176,6 +181,18 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	}
 
 	@Override
+	public void onBackPressed() {
+		if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+			Fragment fragment;
+			if ((fragment = getSupportFragmentManager().findFragmentByTag("application_list_fragment")) != null) {
+				((ApplicationListFragment) fragment).concealApplicationListView();
+				return;
+			}
+		}
+		getSupportFragmentManager().popBackStack();
+	}
+
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.view_first_shortcut_app:
@@ -199,16 +216,12 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	}
 
 	@Override
-	public void onBackPressed() {
-		getSupportFragmentManager().popBackStack();
-	}
-
-	@Override
 	protected void onPause() {
 		super.onPause();
+		getSupportFragmentManager().popBackStack();
 		// code for blocking recent apps button click
-		ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-		activityManager.moveTaskToFront(getTaskId(), 0);
+		//ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+		//activityManager.moveTaskToFront(getTaskId(), 0);
 	}
 
 	@Override
@@ -219,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	private static class OnColorTouchListener implements View.OnTouchListener {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
+			Log.d(TAG, "onTouch");
 			// Create a new ClipData.Item from the ImageView object's tag
 			ClipData.Item item = new ClipData.Item((String) v.getTag());
 
@@ -358,11 +372,9 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 					v.invalidate();
 
 					ApplicationListFragment applicationListFragment = ApplicationListFragment
-							.newInstance(selectedColor, Constants.LAUNCH_APPLICATION_MODE);
-
+							.newInstance(selectedColor, Constants.LAUNCH_APPLICATION_MODE, event.getX() + v.getLeft(), event.getY() + v.getTop());
 					FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-					fragmentTransaction.replace(R.id.layout_root, applicationListFragment, "application_list");
-					//fragmentTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, R.animator.fade_in, R.animator.fade_out);
+					fragmentTransaction.add(android.R.id.content, applicationListFragment, "application_list_fragment");
 					fragmentTransaction.addToBackStack(null);
 					fragmentTransaction.commit();
 
@@ -393,4 +405,6 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 			return false;
 		}
 	}
+
+
 }

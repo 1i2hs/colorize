@@ -35,6 +35,19 @@
             android:textColor="@android:color/white"
             android:textSize="16dp"/>
 
+        <TextView
+            android:id="@+id/textView_mode_setting_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/restart_of_lock_screen_is_required_to_apply_change_of_grouping_mode_setting"
+            android:textColor="@color/colorTernaryText"
+            android:textSize="12dp"/>
+
         <android.support.v7.widget.CardView
             android:id="@+id/cardView_grouping_mode_setting"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -90,6 +103,19 @@
             android:text="@string/general_setting_title"
             android:textColor="@android:color/white"
             android:textSize="16dp"/>
+
+        <TextView
+            android:id="@+id/general_setting_is_applied_right_away"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/general_setting_is_applied_right_away"
+            android:textColor="@color/colorTernaryText"
+            android:textSize="12dp"/>
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView_general_setting"
@@ -169,7 +195,8 @@
                         <FrameLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_weight="1">
+                            android:layout_weight="1"
+                            >
 
                             <edu.skku.inho.colorize.RoundView
                                 android:id="@+id/view_first_shortcut_app"
