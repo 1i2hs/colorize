@@ -13,7 +13,7 @@ import edu.skku.inho.colorize.LockScreenPage.MainActivity;
  * Created by XEiN on 2/20/16.
  */
 public class ScreenStateReceiver extends BroadcastReceiver {
-	private KeyguardManager mKeyguardManager = null;
+	//private KeyguardManager mKeyguardManager = null;
 	private KeyguardManager.KeyguardLock mKeyLock = null;
 	private TelephonyManager mTelephonyManager = null;
 	private boolean mIsPhoneIdle = true;
