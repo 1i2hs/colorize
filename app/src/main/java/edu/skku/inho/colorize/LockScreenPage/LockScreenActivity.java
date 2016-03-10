@@ -86,7 +86,6 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 
 		configureBackground();
 		// check whether the computed color data is ready
-		//if (mSharedPreferences.getBoolean(Keys.IS_COLOR_DATA_READY, false) && mSharedPreferences.getBoolean(Keys.IS_LOCK_SCREEN_RUNNING, false)) {
 		if (LockScreenDataProvider.getInstance(this).isColorDataReady() && LockScreenDataProvider.getInstance(this).isLockScreenRunning()) {
 			configureColorCircles();
 			configureSelectionCircle();
@@ -227,6 +226,11 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 	}
 
 	@Override
+	public void onClickApplicationIcon(String packageName, int clickedViewResId) {
+
+	}
+
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.imageView_first_shortcut_app:
@@ -247,11 +251,6 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 				break;
 		}
 		finish();
-	}
-
-	@Override
-	public void onClickApplicationIcon(String packageName, int clickedViewResId) {
-
 	}
 
 	private static class OnColorTouchListener implements View.OnTouchListener {

@@ -54,7 +54,6 @@ public class UpdateService extends Service {
 			// notify SettingActivity that color computing is finished
 			sendColorDataReadyStateMessage();
 
-			//mSharedPreferences.edit().putBoolean(Keys.IS_COLOR_DATA_READY, true).apply();
 			lockScreenDataProvider.setIsColorDataReady(true);
 
 			// check all applications' installation state every N seconds
@@ -83,7 +82,6 @@ public class UpdateService extends Service {
 		}
 
 		configureGroupingMode(intent);
-		//configureApplicationListChangeCheckingPeriod();
 
 		// start thread for color analyzing
 		HandlerThread updateHandlerThread = new HandlerThread("UpdateColorData", Process.THREAD_PRIORITY_BACKGROUND);
@@ -92,7 +90,6 @@ public class UpdateService extends Service {
 		startForeground(1, getNotification());
 		addHandlerToHandlerThread(updateHandlerThread);
 
-		//mSharedPreferences.edit().putBoolean(Keys.IS_LOCK_SCREEN_RUNNING, true).apply();
 		LockScreenDataProvider.getInstance(this).setIsLockScreenRunning(true);
 
 		return START_REDELIVER_INTENT;
@@ -113,7 +110,6 @@ public class UpdateService extends Service {
 		sendFinishMessage();
 
 		// save stopped lock screen running state into shared preferences
-		//mSharedPreferences.edit().putBoolean(Keys.IS_LOCK_SCREEN_RUNNING, false).apply();
 		LockScreenDataProvider.getInstance(this).setIsLockScreenRunning(false);
 
 		unregisterReceiver(mScreenStateReceiver);
@@ -138,7 +134,6 @@ public class UpdateService extends Service {
 		if (intent != null) {
 			mGroupingMode = intent.getIntExtra(Keys.GROUPING_MODE, Constants.GROUPING_WITH_FIXED_COLOR_MODE);
 		} else {
-			//mGroupingMode = mSharedPreferences.getInt(Keys.GROUPING_MODE, Constants.GROUPING_WITH_FIXED_COLOR_MODE);
 			mGroupingMode = LockScreenDataProvider.getInstance(this).getGroupingMode();
 		}
 	}
