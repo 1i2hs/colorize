@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".ColorizeApplication"
@@ -14,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/ColorizeTheme">
         <activity
-            android:name=".LockScreenPage.MainActivity"
+            android:name=".LockScreenPage.LockScreenActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
@@ -49,6 +50,11 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".CroppingBackgroundPage.CroppingImageActivity"
+            android:theme="@style/ColorizeTheme">
+        </activity>
     </application>
 
 </manifest>

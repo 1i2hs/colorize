@@ -171,6 +171,23 @@
                     android:background="@color/colorDivider">
                 </FrameLayout>
 
+                <TextView
+                    android:id="@+id/textView_lock_screen_background_selection"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/lock_screen_background_selection"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="16dp"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/colorDivider"/>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -192,66 +209,109 @@
                         android:orientation="horizontal"
                         android:weightSum="4">
 
-                        <FrameLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            >
-
-                            <edu.skku.inho.colorize.RoundView
-                                android:id="@+id/view_first_shortcut_app"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:layout_gravity="center"
-                                android:background="@drawable/ic_add_circle_outline_black_48dp"
-                                android:elevation="4dp"/>
-
-                        </FrameLayout>
-
-                        <FrameLayout
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1">
 
-                            <edu.skku.inho.colorize.RoundView
-                                android:id="@+id/view_second_shortcut_app"
+                            <ImageView
+                                android:id="@+id/imageView_first_shortcut_app"
                                 android:layout_width="48dp"
                                 android:layout_height="48dp"
+                                android:layout_centerInParent="true"
                                 android:layout_gravity="center"
-                                android:background="@drawable/ic_add_circle_outline_black_48dp"
-                                android:elevation="4dp"/>
+                                android:elevation="4dp"
+                                android:src="@drawable/ic_add_circle_outline_black_48dp"/>
 
-                        </FrameLayout>
+                            <ImageView
+                                android:id="@+id/imageView_remove_first_shortcut_app"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignLeft="@+id/imageView_first_shortcut_app"
+                                android:layout_marginLeft="36dp"
+                                android:elevation="4dp"
+                                android:src="@drawable/ic_remove_circle_black_24dp"
+                                android:visibility="invisible"/>
 
-                        <FrameLayout
+                        </RelativeLayout>
+
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1">
 
-                            <edu.skku.inho.colorize.RoundView
-                                android:id="@+id/view_third_shortcut_app"
+                            <ImageView
+                                android:id="@+id/imageView_second_shortcut_app"
                                 android:layout_width="48dp"
                                 android:layout_height="48dp"
+                                android:layout_centerInParent="true"
                                 android:layout_gravity="center"
-                                android:background="@drawable/ic_add_circle_outline_black_48dp"
-                                android:elevation="4dp"/>
+                                android:elevation="4dp"
+                                android:src="@drawable/ic_add_circle_outline_black_48dp"/>
 
-                        </FrameLayout>
+                            <ImageView
+                                android:id="@+id/imageView_remove_second_shortcut_app"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignLeft="@+id/imageView_second_shortcut_app"
+                                android:layout_marginLeft="36dp"
+                                android:elevation="4dp"
+                                android:src="@drawable/ic_remove_circle_black_24dp"
+                                android:visibility="invisible"/>
 
-                        <FrameLayout
+                        </RelativeLayout>
+
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1">
 
-                            <edu.skku.inho.colorize.RoundView
-                                android:id="@+id/view_fourth_shortcut_app"
+                            <ImageView
+                                android:id="@+id/imageView_third_shortcut_app"
                                 android:layout_width="48dp"
                                 android:layout_height="48dp"
+                                android:layout_centerInParent="true"
                                 android:layout_gravity="center"
-                                android:background="@drawable/ic_add_circle_outline_black_48dp"
-                                android:elevation="4dp"/>
+                                android:elevation="4dp"
+                                android:src="@drawable/ic_add_circle_outline_black_48dp"/>
 
-                        </FrameLayout>
+                            <ImageView
+                                android:id="@+id/imageView_remove_third_shortcut_app"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignLeft="@+id/imageView_third_shortcut_app"
+                                android:layout_marginLeft="36dp"
+                                android:elevation="4dp"
+                                android:src="@drawable/ic_remove_circle_black_24dp"
+                                android:visibility="invisible"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:id="@+id/imageView_fourth_shortcut_app"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:layout_centerInParent="true"
+                                android:layout_gravity="center"
+                                android:elevation="4dp"
+                                android:src="@drawable/ic_add_circle_outline_black_48dp"/>
+
+                            <ImageView
+                                android:id="@+id/imageView_remove_fourth_shortcut_app"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignLeft="@+id/imageView_fourth_shortcut_app"
+                                android:layout_marginLeft="36dp"
+                                android:elevation="4dp"
+                                android:src="@drawable/ic_remove_circle_black_24dp"
+                                android:visibility="invisible"/>
+
+                        </RelativeLayout>
 
                     </LinearLayout>
 

@@ -20,7 +20,7 @@ import java.util.List;
 
 import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 import edu.skku.inho.colorize.IconGroupingModule.IconColorGrouper;
-import edu.skku.inho.colorize.SettingPage.SettingActivity;
+import edu.skku.inho.colorize.SettingPage.SplashActivity;
 
 public class UpdateService extends Service {
 	private static final String TAG = "UpdateService";
@@ -127,7 +127,7 @@ public class UpdateService extends Service {
 	}
 
 	private void sendFinishMessage() {
-		Log.d(TAG, "sending lock screen termination message to MainActivity...");
+		Log.d(TAG, "sending lock screen termination message to LockScreenActivity...");
 		Intent intent = new Intent(Keys.UPDATE_SERVICE_BROADCAST);
 		intent.putExtra(Keys.UPDATE_SERVICE_MESSAGE, Constants.UPDATE_SERVICE_DESTROYED);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -155,7 +155,7 @@ public class UpdateService extends Service {
 		Notification.Builder builder = new Notification.Builder(this).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(contentTitle)
 				.setContentText(getResources().getString(R.string.click_to_configure_colorize));
 
-		Intent settingActivityIntent = new Intent(this, SettingActivity.class);
+		Intent settingActivityIntent = new Intent(this, SplashActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, settingActivityIntent, 0);
 		builder.setContentIntent(pendingIntent);
 

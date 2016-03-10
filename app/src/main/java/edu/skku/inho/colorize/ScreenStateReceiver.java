@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
-import edu.skku.inho.colorize.LockScreenPage.MainActivity;
+import edu.skku.inho.colorize.LockScreenPage.LockScreenActivity;
 
 /**
  * Created by XEiN on 2/20/16.
@@ -52,7 +52,7 @@ public class ScreenStateReceiver extends BroadcastReceiver {
 			if(mIsPhoneIdle) {
 				//disableKeyguard();
 
-				Intent mainActivityIntent = new Intent(context, MainActivity.class);
+				Intent mainActivityIntent = new Intent(context, LockScreenActivity.class);
 				mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(mainActivityIntent);
 			}

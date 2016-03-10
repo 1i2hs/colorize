@@ -13,6 +13,8 @@ public class Constants {
 	public static final int GROUPING_WITH_FIXED_COLOR_MODE = 1;
 	public static final int GROUPING_WITH_VARIABLE_COLOR_MODE = 2;
 
+	public static final int LOCK_SCREEN_BACKGROUND_REQUEST = 1;
+
 	public static final int FIRST_APPLICATION_SHORTCUT = 0;
 	public static final int SECOND_APPLICATION_SHORTCUT = 1;
 	public static final int THIRD_APPLICATION_SHORTCUT = 2;

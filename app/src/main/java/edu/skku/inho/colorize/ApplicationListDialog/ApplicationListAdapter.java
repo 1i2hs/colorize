@@ -49,10 +49,14 @@ public class ApplicationListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 	@Override
 	public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View applicationIconView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_application_icon_name, parent, false);
-		if(mApplicationSelectionMode == Constants.LAUNCH_APPLICATION_MODE) {
+		if (mApplicationSelectionMode == Constants.LAUNCH_APPLICATION_MODE) {
 			return new ApplicationIconViewHolder(applicationIconView, mActivity, mApplicationSelectionMode);
 		} else {
-			return new ApplicationIconViewHolder(applicationIconView, mActivity, mApplicationSelectionMode, mClickedViewResId, mOnApplicationListFragmentInteraction);
+			return new ApplicationIconViewHolder(applicationIconView,
+					mActivity,
+					mApplicationSelectionMode,
+					mClickedViewResId,
+					mOnApplicationListFragmentInteraction);
 		}
 	}
 
@@ -94,8 +98,7 @@ public class ApplicationListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 			mApplicationSelectionMode = applicationSelectionMode;
 		}
 
-		public ApplicationIconViewHolder(View itemView, Activity activity, int applicationSelectionMode, int clickedViewResId,
-		                                 ApplicationListFragment.OnApplicationListFragmentInteraction onApplicationListFragmentInteraction) {
+		public ApplicationIconViewHolder(View itemView, Activity activity, int applicationSelectionMode, int clickedViewResId, ApplicationListFragment.OnApplicationListFragmentInteraction onApplicationListFragmentInteraction) {
 			super(itemView);
 			mViewHolder = itemView;
 			mActivity = activity;
@@ -129,7 +132,9 @@ public class ApplicationListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 				mActivity.finish();
 			} else {
 				mOnApplicationListFragmentInteraction.onClickApplicationIcon(mPackageName, mClickedViewResId);
-				((AppCompatActivity) mActivity).getSupportFragmentManager().popBackStack();
+				//((AppCompatActivity) mActivity).getSupportFragmentManager().popBackStack();
+				((ApplicationListFragment) ((AppCompatActivity) mActivity).getSupportFragmentManager().findFragmentByTag("application_list_fragment"))
+						.concealApplicationListView();
 			}
 		}
 	}

@@ -86,7 +86,7 @@ public class LockScreenDataProvider {
 		if (index < 4) {
 			try {
 				// remove data from the shared preferences
-				removeFromSharedPreferences(getApplicationShortcut(index).getApplicationPackageName());
+				removeFromSharedPreferences(getApplicationShortcutKey(index));
 				mApplicationShortcutList[index] = null;
 			} catch (NullPointerException e) {
 				Toast.makeText(mContext, R.string.error_no_data, Toast.LENGTH_SHORT).show();
@@ -98,7 +98,7 @@ public class LockScreenDataProvider {
 	}
 
 	private void removeFromSharedPreferences(String key) {
-		PreferenceManager.getDefaultSharedPreferences(mContext).edit().remove(key).apply();
+		PreferenceManager.getDefaultSharedPreferences(mContext).edit().remove(key).commit();
 	}
 
 	public ApplicationInfoBundle getApplicationShortcut(int index) {

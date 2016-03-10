@@ -2,6 +2,7 @@ package edu.skku.inho.colorize.SettingPage;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -23,17 +25,19 @@ import android.widget.TextView;
 import edu.skku.inho.colorize.ApplicationInfoBundle;
 import edu.skku.inho.colorize.ApplicationListDialog.ApplicationListFragment;
 import edu.skku.inho.colorize.Constants;
+import edu.skku.inho.colorize.CroppingBackgroundPage.CroppingImageActivity;
 import edu.skku.inho.colorize.Keys;
 import edu.skku.inho.colorize.LockScreenDataProvider;
 import edu.skku.inho.colorize.R;
-import edu.skku.inho.colorize.RoundView;
 import edu.skku.inho.colorize.UpdateService;
 
-public class SettingActivity extends AppCompatActivity implements View.OnClickListener,
+public class SettingActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener,
 		InitializingSettingFragment.InitializingSettingFragmentInteraction,
 		CheckingPeriodChoiceDialogFragment.CheckingPeriodChoiceDialogFragmentInteraction,
 		ApplicationListFragment.OnApplicationListFragmentInteraction {
 	private static final String TAG = "SettingActivity";
+
+	private ImageView mBrandLogoImageView;
 
 	private RadioGroup mGroupingModeSettingRadioGroup;
 	private int mSelectedGroupingMode;
@@ -42,9 +46,12 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 	private TextView mApplicationListChangeCheckPeriodTextView;
 	private int mApplicationListChangeCheckingPeriodChoiceIndex = -1;
 
+	private TextView mLockScreenBackgroundSelectionTextView;
+
 	private Switch mApplicationShortcutsUsageSwitch;
 	private LinearLayout mApplicationShortcutsUsageSettingLinearLayout;
-	private RoundView[] mApplicationShortcutIconRoundView = new RoundView[4];
+	private ImageView[] mApplicationShortcutIconImageView = new ImageView[4];
+	private ImageView[] mApplicationShortcutIconRemoveImageView = new ImageView[4];
 	private boolean mUseApplicationShortcuts = false;
 	private ApplicationInfoBundle[] mApplicationShortcuts = new ApplicationInfoBundle[4];
 
@@ -65,6 +72,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		linkViewInstances();
 		configureGroupingModeSetting();
 		configureApplicationListChangeCheckPeriodSetting();
+		configureLockScreenBackgroundSetting();
 		configureApplicationShortCutsUsageSetting();
 		configureStartApplicationButton();
 		configureStopApplicationButton();
@@ -76,17 +84,25 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 	}
 
 	private void linkViewInstances() {
+		mBrandLogoImageView = (ImageView) findViewById(R.id.imageView_brand_icon);
+
 		mGroupingModeSettingRadioGroup = (RadioGroup) findViewById(R.id.radioGroup_grouping_mode_setting);
 
 		mApplicationListChangeCheckPeriodSettingRelativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout_application_list_change_check_period_setting);
 		mApplicationListChangeCheckPeriodTextView = (TextView) findViewById(R.id.textView_application_list_change_check_period);
 
+		mLockScreenBackgroundSelectionTextView = (TextView) findViewById(R.id.textView_lock_screen_background_selection);
+
 		mApplicationShortcutsUsageSwitch = (Switch) findViewById(R.id.switch_application_shortcuts_usage);
 		mApplicationShortcutsUsageSettingLinearLayout = (LinearLayout) findViewById(R.id.linearLayout_application_shortcuts);
-		mApplicationShortcutIconRoundView[0] = (RoundView) findViewById(R.id.view_first_shortcut_app);
-		mApplicationShortcutIconRoundView[1] = (RoundView) findViewById(R.id.view_second_shortcut_app);
-		mApplicationShortcutIconRoundView[2] = (RoundView) findViewById(R.id.view_third_shortcut_app);
-		mApplicationShortcutIconRoundView[3] = (RoundView) findViewById(R.id.view_fourth_shortcut_app);
+		mApplicationShortcutIconImageView[0] = (ImageView) findViewById(R.id.imageView_first_shortcut_app);
+		mApplicationShortcutIconImageView[1] = (ImageView) findViewById(R.id.imageView_second_shortcut_app);
+		mApplicationShortcutIconImageView[2] = (ImageView) findViewById(R.id.imageView_third_shortcut_app);
+		mApplicationShortcutIconImageView[3] = (ImageView) findViewById(R.id.imageView_fourth_shortcut_app);
+		mApplicationShortcutIconRemoveImageView[0] = (ImageView) findViewById(R.id.imageView_remove_first_shortcut_app);
+		mApplicationShortcutIconRemoveImageView[1] = (ImageView) findViewById(R.id.imageView_remove_second_shortcut_app);
+		mApplicationShortcutIconRemoveImageView[2] = (ImageView) findViewById(R.id.imageView_remove_third_shortcut_app);
+		mApplicationShortcutIconRemoveImageView[3] = (ImageView) findViewById(R.id.imageView_remove_fourth_shortcut_app);
 
 		mStartApplicationButton = (Button) findViewById(R.id.button_start_application);
 		mStopApplicationButton = (Button) findViewById(R.id.button_stop_application);
@@ -129,6 +145,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 				.getStringArray(R.array.application_list_change_checking_periods)[mApplicationListChangeCheckingPeriodChoiceIndex]);
 	}
 
+	private void configureLockScreenBackgroundSetting() {
+		mLockScreenBackgroundSelectionTextView.setOnClickListener(this);
+	}
+
 	private void configureApplicationShortCutsUsageSetting() {
 		LockScreenDataProvider lockScreenDataProvider = LockScreenDataProvider.getInstance(this);
 		mUseApplicationShortcuts = lockScreenDataProvider.isUseApplicationShortcuts();
@@ -136,23 +156,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
 		for (int i = 0; i < Constants.NUMBER_OF_APPLICATION_SHORTCUTS; i++) {
 			if ((mApplicationShortcuts[i] = lockScreenDataProvider.getApplicationShortcut(i)) != null) {
-				mApplicationShortcutIconRoundView[i].setBackground(mApplicationShortcuts[i].getApplicationIcon());
+				mApplicationShortcutIconImageView[i].setImageDrawable(mApplicationShortcuts[i].getApplicationIcon());
+				mApplicationShortcutIconRemoveImageView[i].setVisibility(View.VISIBLE);
 			}
-			mApplicationShortcutIconRoundView[i].setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					if (event.getAction() == MotionEvent.ACTION_DOWN) {
-						mTouchedX = (int) event.getRawX();
-						mTouchedY = (int) event.getRawY();
-						Log.d(TAG, "Touched x, y = " + mTouchedX + ", " + mTouchedY);
-					}
-
-					if (event.getAction() == MotionEvent.ACTION_UP) {
-						showShortcutSelectionApplicationListFragment(v);
-					}
-					return true;
-				}
-			});
+			mApplicationShortcutIconImageView[i].setOnTouchListener(this);
+			mApplicationShortcutIconRemoveImageView[i].setOnClickListener(this);
 		}
 
 		// case : application shortcuts usage is already set before
@@ -190,7 +198,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 	private void configureStartApplicationButton() {
 		setStartApplicationButtonEnabled(false);
 
-		// if lock screen is running, then stop the MainActivity and UpdateService to restart
+		// if lock screen is running, then stop the LockScreenActivity and UpdateService to restart
 		if (mIsLockScreenRunning) {
 			mStartApplicationButton.setText(getResources().getString(R.string.restart_lock_screen));
 		} else {
@@ -219,15 +227,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		} else {
 			mStartApplicationButton.setBackground(getDrawable(R.drawable.default_disabled_button_background));
 		}
-	}
-
-	private void showShortcutSelectionApplicationListFragment(View clickedView) {
-		ApplicationListFragment applicationListFragment = ApplicationListFragment
-				.newInstance(clickedView.getId(), Constants.SELECT_SHORTCUT_APPLICATION_MODE, mTouchedX, mTouchedY);
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		fragmentTransaction.add(android.R.id.content, applicationListFragment, "application_list_fragment");
-		fragmentTransaction.addToBackStack(null);
-		fragmentTransaction.commit();
 	}
 
 	@Override
@@ -285,11 +284,21 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 						.newInstance(mApplicationListChangeCheckingPeriodChoiceIndex);
 				checkingPeriodChoiceDialogFragment.show(getSupportFragmentManager(), "checking_period_choice_dialog_fragment");
 				break;
-			case R.id.view_first_shortcut_app:
-			case R.id.view_second_shortcut_app:
-			case R.id.view_third_shortcut_app:
-			case R.id.view_fourth_shortcut_app:
-				showShortcutSelectionApplicationListFragment(v);
+			case R.id.textView_lock_screen_background_selection:
+				Intent intent = new Intent(this, CroppingImageActivity.class);
+				startActivity(intent);
+				break;
+			case R.id.imageView_remove_first_shortcut_app:
+				removeApplicationShortcut(Constants.FIRST_APPLICATION_SHORTCUT);
+				break;
+			case R.id.imageView_remove_second_shortcut_app:
+				removeApplicationShortcut(Constants.SECOND_APPLICATION_SHORTCUT);
+				break;
+			case R.id.imageView_remove_third_shortcut_app:
+				removeApplicationShortcut(Constants.THIRD_APPLICATION_SHORTCUT);
+				break;
+			case R.id.imageView_remove_fourth_shortcut_app:
+				removeApplicationShortcut(Constants.FOURTH_APPLICATION_SHORTCUT);
 				break;
 		}
 	}
@@ -298,6 +307,35 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 		fragmentTransaction.add(android.R.id.content, InitializingSettingFragment.newInstance());
 		fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+		fragmentTransaction.commit();
+	}
+
+	private void removeApplicationShortcut(int applicationShortcutIndex) {
+		mApplicationShortcutIconImageView[applicationShortcutIndex].setImageResource(R.drawable.ic_add_circle_outline_black_48dp);
+		mApplicationShortcutIconRemoveImageView[applicationShortcutIndex].setVisibility(View.INVISIBLE);
+
+		LockScreenDataProvider.getInstance(this).removeApplicationShortcut(applicationShortcutIndex);
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			mTouchedX = (int) event.getRawX();
+			mTouchedY = (int) event.getRawY();
+		}
+
+		if (event.getAction() == MotionEvent.ACTION_UP) {
+			showShortcutSelectionApplicationListFragment(v);
+		}
+		return true;
+	}
+
+	private void showShortcutSelectionApplicationListFragment(View clickedView) {
+		ApplicationListFragment applicationListFragment = ApplicationListFragment
+				.newInstance(clickedView.getId(), Constants.SELECT_SHORTCUT_APPLICATION_MODE, mTouchedX, mTouchedY);
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.add(android.R.id.content, applicationListFragment, "application_list_fragment");
+		fragmentTransaction.addToBackStack(null);
 		fragmentTransaction.commit();
 	}
 
@@ -322,35 +360,36 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 	@Override
 	public void onClickApplicationIcon(String packageName, int clickedViewResId) {
 		try {
-			ApplicationInfoBundle applicationInfoBundle = new ApplicationInfoBundle();
-			applicationInfoBundle.setApplicationIcon(getPackageManager().getApplicationIcon(packageName));
-			applicationInfoBundle.setApplicationPackageName(packageName);
-
 			switch (clickedViewResId) {
-				case R.id.view_first_shortcut_app:
-					mApplicationShortcutIconRoundView[Constants.FIRST_APPLICATION_SHORTCUT]
-							.setBackground(getPackageManager().getApplicationIcon(packageName));
-					LockScreenDataProvider.getInstance(this).addApplicationShortcut(Constants.FIRST_APPLICATION_SHORTCUT, applicationInfoBundle);
+				case R.id.imageView_first_shortcut_app:
+					addApplicationShortcut(Constants.FIRST_APPLICATION_SHORTCUT, packageName);
 					break;
-				case R.id.view_second_shortcut_app:
-					mApplicationShortcutIconRoundView[Constants.SECOND_APPLICATION_SHORTCUT]
-							.setBackground(getPackageManager().getApplicationIcon(packageName));
-					LockScreenDataProvider.getInstance(this).addApplicationShortcut(Constants.SECOND_APPLICATION_SHORTCUT, applicationInfoBundle);
+				case R.id.imageView_second_shortcut_app:
+					addApplicationShortcut(Constants.SECOND_APPLICATION_SHORTCUT, packageName);
 					break;
-				case R.id.view_third_shortcut_app:
-					mApplicationShortcutIconRoundView[Constants.THIRD_APPLICATION_SHORTCUT]
-							.setBackground(getPackageManager().getApplicationIcon(packageName));
-					LockScreenDataProvider.getInstance(this).addApplicationShortcut(Constants.THIRD_APPLICATION_SHORTCUT, applicationInfoBundle);
+				case R.id.imageView_third_shortcut_app:
+					addApplicationShortcut(Constants.THIRD_APPLICATION_SHORTCUT, packageName);
 					break;
-				case R.id.view_fourth_shortcut_app:
-					mApplicationShortcutIconRoundView[Constants.FOURTH_APPLICATION_SHORTCUT]
-							.setBackground(getPackageManager().getApplicationIcon(packageName));
-					LockScreenDataProvider.getInstance(this).addApplicationShortcut(Constants.FOURTH_APPLICATION_SHORTCUT, applicationInfoBundle);
+				case R.id.imageView_fourth_shortcut_app:
+					addApplicationShortcut(Constants.FOURTH_APPLICATION_SHORTCUT, packageName);
 					break;
 			}
 		} catch (PackageManager.NameNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void addApplicationShortcut(int applicationShortcutIndex, String packageName) throws PackageManager.NameNotFoundException {
+		ApplicationInfoBundle applicationInfoBundle = new ApplicationInfoBundle();
+		Drawable applicationIcon = getPackageManager().getApplicationIcon(packageName);
+
+		applicationInfoBundle.setApplicationIcon(applicationIcon);
+		applicationInfoBundle.setApplicationPackageName(packageName);
+
+		mApplicationShortcutIconImageView[applicationShortcutIndex].setImageDrawable(applicationIcon);
+		mApplicationShortcutIconRemoveImageView[applicationShortcutIndex].setVisibility(View.VISIBLE);
+
+		LockScreenDataProvider.getInstance(this).addApplicationShortcut(applicationShortcutIndex, applicationInfoBundle);
 	}
 
 	private class ApplicationShortcutsLinearLayoutTransitionAnimation extends Animation {

@@ -4,12 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -20,21 +22,29 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import edu.skku.inho.colorize.ApplicationInfoBundle;
 import edu.skku.inho.colorize.ApplicationListDialog.ApplicationListFragment;
 import edu.skku.inho.colorize.Constants;
+import edu.skku.inho.colorize.CroppingBackgroundPage.BackgroundImageFileChangedDateSignature;
 import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 import edu.skku.inho.colorize.Keys;
 import edu.skku.inho.colorize.LockScreenDataProvider;
 import edu.skku.inho.colorize.R;
 import edu.skku.inho.colorize.RoundView;
 
-public class MainActivity extends AppCompatActivity implements ApplicationListFragment.OnApplicationListFragmentInteraction, View.OnClickListener {
-	private final static String TAG = "MainActivity";
+public class LockScreenActivity extends AppCompatActivity implements ApplicationListFragment.OnApplicationListFragmentInteraction,
+		View.OnClickListener {
+	private final static String TAG = "LockScreenActivity";
+
+	private ImageView mBackgroundImageView;
 
 	private View mSelectionCircleView;
 
@@ -62,12 +72,19 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate Lock Screen");
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_lock_screen);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			getWindow().setStatusBarColor(getColor(R.color.status_bar_color));
+		} else {
+			getWindow().setStatusBarColor(getResources().getColor(R.color.status_bar_color));
+		}
 
 		LocalBroadcastManager.getInstance(this).registerReceiver(mServiceStateReceiver, new IntentFilter(Keys.UPDATE_SERVICE_BROADCAST));
 
+		configureBackground();
 		// check whether the computed color data is ready
 		//if (mSharedPreferences.getBoolean(Keys.IS_COLOR_DATA_READY, false) && mSharedPreferences.getBoolean(Keys.IS_LOCK_SCREEN_RUNNING, false)) {
 		if (LockScreenDataProvider.getInstance(this).isColorDataReady() && LockScreenDataProvider.getInstance(this).isLockScreenRunning()) {
@@ -90,7 +107,15 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	protected void onDestroy() {
 		super.onDestroy();
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(mServiceStateReceiver);
-		Log.d(TAG, "MainActivity Destroyed...");
+		Log.d(TAG, "LockScreenActivity Destroyed...");
+	}
+
+	private void configureBackground() {
+		mBackgroundImageView = (ImageView) findViewById(R.id.imageView_background);
+
+		File imageFile = new File(getDir(getResources().getString(R.string.background_image_file_dir_name), ContextWrapper.MODE_PRIVATE),
+				getResources().getString(R.string.background_image_file_name));
+		Glide.with(this).load(imageFile).signature(new BackgroundImageFileChangedDateSignature(imageFile.lastModified())).into(mBackgroundImageView);
 	}
 
 	/**
@@ -166,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 
 	protected void configureApplicationShortcuts() {
 		if (LockScreenDataProvider.getInstance(this).isUseApplicationShortcuts()) {
-			int[] viewResId = {R.id.view_first_shortcut_app, R.id.view_second_shortcut_app, R.id.view_third_shortcut_app, R.id.view_fourth_shortcut_app};
+			int[] viewResId = {R.id.imageView_first_shortcut_app, R.id.imageView_second_shortcut_app, R.id.imageView_third_shortcut_app, R.id.imageView_fourth_shortcut_app};
 
 			for (int i = 0; i < Constants.NUMBER_OF_APPLICATION_SHORTCUTS; i++) {
 				// case : if there is an application shortcut set for i-th position
@@ -193,35 +218,35 @@ public class MainActivity extends AppCompatActivity implements ApplicationListFr
 	}
 
 	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.view_first_shortcut_app:
-				startActivity(getPackageManager()
-						.getLaunchIntentForPackage(mApplicationShortcut[Constants.FIRST_APPLICATION_SHORTCUT].getApplicationPackageName()));
-				break;
-			case R.id.view_second_shortcut_app:
-				startActivity(getPackageManager()
-						.getLaunchIntentForPackage(mApplicationShortcut[Constants.SECOND_APPLICATION_SHORTCUT].getApplicationPackageName()));
-				break;
-			case R.id.view_third_shortcut_app:
-				startActivity(getPackageManager()
-						.getLaunchIntentForPackage(mApplicationShortcut[Constants.THIRD_APPLICATION_SHORTCUT].getApplicationPackageName()));
-				break;
-			case R.id.view_fourth_shortcut_app:
-				startActivity(getPackageManager()
-						.getLaunchIntentForPackage(mApplicationShortcut[Constants.FOURTH_APPLICATION_SHORTCUT].getApplicationPackageName()));
-				break;
-		}
-		finish();
-	}
-
-	@Override
 	protected void onPause() {
 		super.onPause();
 		getSupportFragmentManager().popBackStack();
 		// code for blocking recent apps button click
 		//ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
 		//activityManager.moveTaskToFront(getTaskId(), 0);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.imageView_first_shortcut_app:
+				startActivity(getPackageManager()
+						.getLaunchIntentForPackage(mApplicationShortcut[Constants.FIRST_APPLICATION_SHORTCUT].getApplicationPackageName()));
+				break;
+			case R.id.imageView_second_shortcut_app:
+				startActivity(getPackageManager()
+						.getLaunchIntentForPackage(mApplicationShortcut[Constants.SECOND_APPLICATION_SHORTCUT].getApplicationPackageName()));
+				break;
+			case R.id.imageView_third_shortcut_app:
+				startActivity(getPackageManager()
+						.getLaunchIntentForPackage(mApplicationShortcut[Constants.THIRD_APPLICATION_SHORTCUT].getApplicationPackageName()));
+				break;
+			case R.id.imageView_fourth_shortcut_app:
+				startActivity(getPackageManager()
+						.getLaunchIntentForPackage(mApplicationShortcut[Constants.FOURTH_APPLICATION_SHORTCUT].getApplicationPackageName()));
+				break;
+		}
+		finish();
 	}
 
 	@Override

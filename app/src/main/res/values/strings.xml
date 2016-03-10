@@ -14,6 +14,9 @@
     <string name="general_setting_title">일반 설정</string>
     <string name="application_list_change_checking_period">설치된 어플리케이션 확인 주기</string>
     <string name="application_list_change_checking_period_selection">확인 주기 시간</string>
+    <string name="lock_screen_background_selection">잠금화면 배경 설정</string>
+    <string name="crop_image_to_use_as_background">배경 이미지 크롭</string>
+    <string name="lock_screen_background_selected">잠금화면 배경이 설정되었습니다.</string>
     <string name="application_shortcuts_usage">어플리케이션 바로가기 사용</string>
     <string name="select_application_to_use_as_shortcut">바로가기가 필요한 어플리케이션을 선택해주세요</string>
 
@@ -36,7 +39,7 @@
     <string name="grouping_with_variable_color_mode_running">[가변 컬러]</string>
     <string name="click_to_configure_colorize">설정 변경하려면 클릭</string>
 
-    <!--MainActivity-->
+    <!--LockScreenActivity-->
     <string name="update_service_not_running">어플리케이션이 정상적으로 시작되지 않았습니다. 앱 아이콘을 클릭하여 다시 시작해주세요.</string>
     <string name="select_application_to_launch">실행하실 어플을 선택해주세요</string>
     <string name="number_of_applications_found">개의 어플</string>
@@ -44,4 +47,6 @@
     <!--Common-->
     <string name="confirm">확인</string>
     <string name="error_no_data">에러: 데이터가 존재하지 않습니다!</string>
+    <string name="background_image_file_dir_name">background</string>
+    <string name="background_image_file_name">backgroundImageFile.png</string>
 </resources>
