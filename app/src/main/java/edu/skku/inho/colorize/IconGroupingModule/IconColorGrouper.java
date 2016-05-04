@@ -24,7 +24,7 @@ public class IconColorGrouper {
 	private List<GroupColor> mGroupColorList;
 	private List<ApplicationInfoBundle> mApplicationList;
 
-	public IconColorGrouper(List<ApplicationInfoBundle> applicationList, List<GroupColor> groupColorList) {
+	private IconColorGrouper(List<ApplicationInfoBundle> applicationList, List<GroupColor> groupColorList) {
 		mApplicationList = applicationList;
 		mGroupColorList = groupColorList;
 	}
@@ -49,7 +49,7 @@ public class IconColorGrouper {
 
 		private List<ApplicationInfoBundle> mApplicationList;
 
-		private int[] mFixedGroupColorIds = {R.color.fixed_color_one, R.color.fixed_color_two, R.color.fixed_color_three, R.color.fixed_color_four, R.color.fixed_color_five, R.color.fixed_color_six, R.color.fixed_color_seven, R.color.fixed_color_eight};
+		private int[] mFixedGroupColorIds = {R.color.fixed_color_one, R.color.fixed_color_two, R.color.fixed_color_three, R.color.fixed_color_four, R.color.fixed_color_five, R.color.fixed_color_six, R.color.fixed_color_seven};
 
 		private boolean mIsGroupingWithFixedColorModeInitialized = true;
 
@@ -69,7 +69,6 @@ public class IconColorGrouper {
 				int minimumEuclideanDistanceIndex = -1;
 
 				for (int i = 0; i < groupColorList.size(); i++) {
-					//double temp = computeEuclideanDistanceBetweenTwoColors(groupColorList.get(i), extractedColor);
 					double temp = Color.distance(groupColorList.get(i), extractedColor);
 					if (temp < minimumEuclideanDistance) {
 						minimumEuclideanDistance = temp;
@@ -159,7 +158,7 @@ public class IconColorGrouper {
 		}
 
 		private void extractSevenColors(Palette palette, ApplicationInfoBundle applicationInfoBundle, ArrayList<Color> extractedColorList) {
-			Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+			/*Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
 			Palette.Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
 			Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
 
@@ -198,7 +197,7 @@ public class IconColorGrouper {
 				//Log.i(TAG, "Extracting dark muted color...");
 				extractedColorList.add(makeExtractedColorPoint(darkMutedSwatch, applicationInfoBundle));
 			}
-
+*/
 			//Log.i(TAG, "Extracting highly populated color...");
 			if (palette.getSwatches().size() > 0) {
 				//Log.d(TAG, applicationInfoBundle.getApplicationName());

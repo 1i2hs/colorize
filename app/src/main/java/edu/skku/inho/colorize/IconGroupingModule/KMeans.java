@@ -88,7 +88,6 @@ public class KMeans {
 				finish = true;
 			}
 		}
-		//
 	}
 
 	private void clearGroups() {

@@ -15,7 +15,6 @@ public class GroupColor extends Color {
 	public static final String FIFTH_COLOR = "fifth_color";
 	public static final String SIXTH_COLOR = "sixth_color";
 	public static final String SEVENTH_COLOR = "seventh_color";
-	public static final String EIGHTH_COLOR = "eighth_color";
 
 	private int mARGBColor;
 	private ArrayList<ApplicationInfoBundle> mApplicationList;

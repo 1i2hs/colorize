@@ -124,7 +124,7 @@ public class ApplicationListFragment extends Fragment {
 		configureRecyclerView(view);
 
 		mApplicationListView = view.findViewById(R.id.linearLayout_application_list);
-		revealApplicationListView();
+		revealApplicationList();
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public class ApplicationListFragment extends Fragment {
 		mApplicationListRecyclerView.setAdapter(adapter);
 	}
 
-	public void revealApplicationListView() {
+	public void revealApplicationList() {
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
@@ -198,7 +198,7 @@ public class ApplicationListFragment extends Fragment {
 		anim.start();
 	}
 
-	public void concealApplicationListView() {
+	public void concealApplicationList() {
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 

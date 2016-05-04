@@ -1,8 +1,9 @@
-package edu.skku.inho.colorize;
+package edu.skku.inho.colorize.CustomView;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -11,11 +12,11 @@ import android.widget.GridView;
 /**
  * Created by XEiN on 1/26/16.
  */
-public class RoundView extends View {
+public class CircleView extends View {
 
 	private Paint paint;
 
-	public RoundView(Context context, AttributeSet attrs) {
+	public CircleView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		paint.setColor(Color.TRANSPARENT);
@@ -40,6 +41,7 @@ public class RoundView extends View {
 		int height = getHeight();
 		int width = getWidth();
 
-		canvas.drawCircle(width / 2, height / 2, (int) (width * 0.375), paint);
+		//canvas.drawCircle(width / 2, height / 2, (int) (width * 0.375), paint);
+		canvas.drawCircle(width / 2, height / 2, width / 2, paint);
 	}
 }

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/layout_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LockScreenPage.LockScreenActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ColorizeTheme.AppBarOverlay"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:saveEnabled="false"
+        android:scaleX="0.7"
+        android:scaleY="0.7">
+
+        <ImageView
+            android:id="@+id/imageView_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"/>
+
+        <edu.skku.inho.colorize.CustomView.DigitalClockView
+            android:id="@+id/digitalClockView_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="48dp"
+            android:textColor="@color/colorTernaryText"
+            android:textSize="80dp"
+            custom:dateFormat="time"/>
+
+        <edu.skku.inho.colorize.CustomView.DigitalClockView
+            android:id="@+id/digitalClockView_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/digitalClockView_time"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/colorTernaryText"
+            android:textSize="18dp"
+            custom:dateFormat="date"/>
+
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimaryLight"
+        android:elevation="3dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayout_recommended_color_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</RelativeLayout>

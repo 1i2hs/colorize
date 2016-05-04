@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize.LockScreenPage;
+package edu.skku.inho.colorize.CustomView;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -17,7 +17,7 @@ import edu.skku.inho.colorize.R;
 /**
  * Created by XEiN on 2/20/16.
  */
-public class DigitalClock extends TextView {
+public class DigitalClockView extends TextView {
 	public static final int TIME = 0;
 	public static final int DATE = 1;
 	private final static String m12 = "h:mm";
@@ -30,7 +30,7 @@ public class DigitalClock extends TextView {
 	private boolean mTickerStopped = false;
 	private int mTextFormat;
 
-	public DigitalClock(Context context, int textFormat) {
+	public DigitalClockView(Context context, int textFormat) {
 		super(context);
 		mTextFormat = textFormat;
 		initClock();
@@ -49,7 +49,7 @@ public class DigitalClock extends TextView {
 	}
 
 	private void setFormat() {
-		if(mTextFormat == DigitalClock.TIME) {
+		if (mTextFormat == DigitalClockView.TIME) {
 			if (get24HourMode()) {
 				mFormat = m24;
 			} else {
@@ -67,16 +67,15 @@ public class DigitalClock extends TextView {
 		return android.text.format.DateFormat.is24HourFormat(getContext());
 	}
 
-	public DigitalClock(Context context, AttributeSet attrs) {
+	public DigitalClockView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 
 		TypedArray a = context.getTheme().obtainStyledAttributes(
-				attrs,
-				R.styleable.DigitalClock,
+				attrs, R.styleable.DigitalClockView,
 				0, 0);
 
 		try {
-			mTextFormat = a.getInteger(R.styleable.DigitalClock_dateFormat, 0);
+			mTextFormat = a.getInteger(R.styleable.DigitalClockView_dateFormat, 0);
 		} finally {
 			a.recycle();
 		}

@@ -134,7 +134,7 @@ public class ApplicationListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 				mOnApplicationListFragmentInteraction.onClickApplicationIcon(mPackageName, mClickedViewResId);
 				//((AppCompatActivity) mActivity).getSupportFragmentManager().popBackStack();
 				((ApplicationListFragment) ((AppCompatActivity) mActivity).getSupportFragmentManager().findFragmentByTag("application_list_fragment"))
-						.concealApplicationListView();
+						.concealApplicationList();
 			}
 		}
 	}

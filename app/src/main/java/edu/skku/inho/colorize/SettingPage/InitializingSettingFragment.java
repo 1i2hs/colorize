@@ -36,7 +36,7 @@ public class InitializingSettingFragment extends Fragment {
 	private BroadcastReceiver mServiceStateReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if (intent.getIntExtra(Keys.UPDATE_SERVICE_MESSAGE, Constants.COLOR_DATA_NOT_READY) == Constants.COLOR_DATA_READY) {
+			if (intent.getIntExtra(Keys.COLOR_GROUPING_SERVICE_MESSAGE, Constants.COLOR_DATA_NOT_READY) == Constants.COLOR_DATA_READY) {
 				mInitializingSettingProgressBar.setVisibility(View.GONE);
 				mInitializingSettingProgressTextView.setText(R.string.initializing_setting_done);
 				mConfirmCompletionOfInitializingSettingButton.setVisibility(View.VISIBLE);
@@ -68,7 +68,8 @@ public class InitializingSettingFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mServiceStateReceiver, new IntentFilter(Keys.UPDATE_SERVICE_BROADCAST));
+		LocalBroadcastManager.getInstance(getActivity())
+				.registerReceiver(mServiceStateReceiver, new IntentFilter(Keys.COLOR_GROUPING_SERVICE_BROADCAST));
 	}
 
 	@Override

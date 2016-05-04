@@ -49,7 +49,7 @@ public class CroppingImageActivity extends AppCompatActivity {
 
 	private void configureToolbar() {
 		setSupportActionBar(mToolbar);
-		getSupportActionBar().setTitle(R.string.crop_image_to_use_as_background);
+		mToolbar.setTitle(R.string.crop_image_to_use_as_background);
 		mToolbar.setSubtitle(R.string.lock_screen_background_selection);
 		mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -90,7 +90,7 @@ public class CroppingImageActivity extends AppCompatActivity {
 		File backgroundImageFile = new File(backgroundImageFilePath, getResources().getString(R.string.background_image_file_name));
 		FileOutputStream out = null;
 
-		Log.d(TAG, "" + backgroundImageFile.delete());
+		Log.i(TAG, "Background image file updated: " + backgroundImageFile.delete());
 
 		try {
 			backgroundImageFile.createNewFile();

@@ -15,8 +15,8 @@
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"/>
 
-    <edu.skku.inho.colorize.LockScreenPage.DigitalClock
-        android:id="@+id/textView_time"
+    <edu.skku.inho.colorize.CustomView.DigitalClockView
+        android:id="@+id/digitalClockView_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -24,124 +24,122 @@
         android:layout_marginTop="48dp"
         android:textColor="@color/colorTernaryText"
         android:textSize="80dp"
-        custom:dateFormat="time"
-        />
+        custom:dateFormat="time"/>
 
-    <edu.skku.inho.colorize.LockScreenPage.DigitalClock
-        android:id="@+id/textView_date"
+    <edu.skku.inho.colorize.CustomView.DigitalClockView
+        android:id="@+id/digitalClockView_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView_time"
+        android:layout_below="@+id/digitalClockView_time"
         android:layout_centerHorizontal="true"
         android:textColor="@color/colorTernaryText"
         android:textSize="18dp"
         custom:dateFormat="date"/>
 
-    <View
-        android:id="@+id/view_selection_circle"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_above="@+id/view_fifth_color_circle"
-        android:layout_alignParentBottom="false"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/layerlist_select_circle"/>
+    <FrameLayout
+        android:id="@+id/frameLayout_background_shade"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="@color/status_bar_color"
+        android:elevation="3dp">
+    </FrameLayout>
 
-    <edu.skku.inho.colorize.RoundView
+    <edu.skku.inho.colorize.CustomView.CircleView
         android:id="@+id/view_first_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_above="@+id/view_selection_circle"
         android:layout_alignParentRight="false"
+        android:layout_alignTop="@+id/view_selection_circle"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/shape_color_circle_background"
+        android:layout_marginTop="20dp"
         android:clickable="true"
-        android:elevation="4dp"/>
+        android:elevation="4dp"
+        />
 
-    <edu.skku.inho.colorize.RoundView
+    <edu.skku.inho.colorize.CustomView.CircleView
         android:id="@+id/view_second_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_above="@+id/view_third_color_circle"
         android:layout_alignParentEnd="false"
         android:layout_alignParentRight="false"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="25dp"
-        android:layout_toRightOf="@+id/view_first_color_circle"
-        android:background="@drawable/shape_color_circle_background"
+        android:layout_alignTop="@+id/view_selection_circle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundView
+    <edu.skku.inho.colorize.CustomView.CircleView
         android:id="@+id/view_third_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="false"
         android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_marginLeft="32dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:layout_toRightOf="@+id/view_selection_circle"
-        android:background="@drawable/shape_color_circle_background"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundView
+    <edu.skku.inho.colorize.CustomView.CircleView
         android:id="@+id/view_fourth_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="false"
-        android:layout_below="@+id/view_third_color_circle"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_toRightOf="@+id/view_fifth_color_circle"
-        android:background="@drawable/shape_color_circle_background"
+        android:layout_alignTop="@+id/view_selection_circle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundView
+    <edu.skku.inho.colorize.CustomView.CircleView
+        android:id="@+id/view_unlock_circle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="false"
+        android:layout_alignTop="@+id/view_selection_circle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/layerlist_unlock_circle"
+        android:elevation="4dp"/>
+
+    <edu.skku.inho.colorize.CustomView.CircleView
         android:id="@+id/view_fifth_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_above="@+id/linearLayout_application_shortcuts"
         android:layout_alignParentRight="false"
+        android:layout_alignTop="@+id/view_selection_circle"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/shape_color_circle_background"
+        android:layout_marginTop="20dp"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundView
+    <edu.skku.inho.colorize.CustomView.CircleView
         android:id="@+id/view_sixth_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="false"
-        android:layout_below="@+id/view_seventh_color_circle"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_toLeftOf="@+id/view_fifth_color_circle"
-        android:background="@drawable/shape_color_circle_background"
+        android:layout_alignTop="@+id/view_selection_circle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundView
+    <edu.skku.inho.colorize.CustomView.CircleView
         android:id="@+id/view_seventh_color_circle"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="false"
         android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_marginRight="32dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:layout_toLeftOf="@+id/view_selection_circle"
-        android:background="@drawable/shape_color_circle_background"
         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.RoundView
-        android:id="@+id/view_eighth_color_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_above="@+id/view_seventh_color_circle"
-        android:layout_alignParentRight="false"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="25dp"
-        android:layout_toLeftOf="@+id/view_first_color_circle"
-        android:background="@drawable/shape_color_circle_background"
-        android:elevation="4dp"/>
+    <View
+        android:id="@+id/view_selection_circle"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_above="@+id/linearLayout_application_shortcuts"
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="88dp"
+        android:background="@mipmap/ic_launcher"
+        android:elevation="4dp"
+        />
 
     <LinearLayout
         android:id="@+id/linearLayout_application_shortcuts"
@@ -158,13 +156,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <edu.skku.inho.colorize.RoundView
+            <edu.skku.inho.colorize.CustomView.CircleView
                 android:id="@+id/imageView_first_shortcut_app"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_color_circle_background"
-                android:elevation="4dp"
+                android:elevation="3dp"
                 android:visibility="invisible"/>
 
         </FrameLayout>
@@ -175,13 +173,13 @@
             android:layout_weight="1"
             >
 
-            <edu.skku.inho.colorize.RoundView
+            <edu.skku.inho.colorize.CustomView.CircleView
                 android:id="@+id/imageView_second_shortcut_app"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_color_circle_background"
-                android:elevation="4dp"
+                android:elevation="3dp"
                 android:visibility="invisible"/>
 
         </FrameLayout>
@@ -191,13 +189,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <edu.skku.inho.colorize.RoundView
+            <edu.skku.inho.colorize.CustomView.CircleView
                 android:id="@+id/imageView_third_shortcut_app"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_color_circle_background"
-                android:elevation="4dp"
+                android:elevation="3dp"
                 android:visibility="invisible"/>
 
         </FrameLayout>
@@ -207,13 +205,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <edu.skku.inho.colorize.RoundView
+            <edu.skku.inho.colorize.CustomView.CircleView
                 android:id="@+id/imageView_fourth_shortcut_app"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_color_circle_background"
-                android:elevation="4dp"
+                android:elevation="3dp"
                 android:visibility="invisible"/>
 
         </FrameLayout>

@@ -1,40 +1,37 @@
 <resources>
     <string name="app_name">Colorize</string>
+
     <string name="guide_text_application_list">Select application to launch</string>
 
-    <string name="title_activity_launch">LaunchActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-
     <!--SettingActivity-->
-    <string name="group_mode_title">그루핑 모드 설정</string>
-    <string name="grouping_with_fixed_color_mode">고정 컬러 그루핑 모드 사용</string>
-    <string name="grouping_with_variable_color_mode">가변 컬러 그루핑 모드 사용</string>
-
     <string name="general_setting_title">일반 설정</string>
-    <string name="application_list_change_checking_period">설치된 어플리케이션 확인 주기</string>
-    <string name="application_list_change_checking_period_selection">확인 주기 시간</string>
-    <string name="lock_screen_background_selection">잠금화면 배경 설정</string>
-    <string name="crop_image_to_use_as_background">배경 이미지 크롭</string>
-    <string name="lock_screen_background_selected">잠금화면 배경이 설정되었습니다.</string>
     <string name="application_shortcuts_usage">어플리케이션 바로가기 사용</string>
     <string name="select_application_to_use_as_shortcut">바로가기가 필요한 어플리케이션을 선택해주세요</string>
+    <string name="advanced_setting_title">고급 설정</string>
+    <string name="group_mode_title">그루핑 모드</string>
+    <string name="grouping_with_fixed_color_mode">고정 컬러 그루핑 모드</string>
+    <string name="grouping_with_variable_color_mode">가변 컬러 그루핑 모드</string>
+    <string name="changing_mode">모드 변경중...</string>
 
     <string name="stop_lock_screen">잠금화면 정지</string>
-
     <string name="start_lock_screen">잠금화면 실행</string>
-    <string name="restart_lock_screen">잠금화면 재실행</string>
-    <string name="lock_screen_running">잠금화면 작동 중&#8230;</string>
-
-    <string name="restart_of_lock_screen_is_required_to_apply_change_of_grouping_mode_setting">그루핑 모드 변경은 잠금화면 재실행 또는 정지 후 실행 시에만 적용됩니다.</string>
-    <string name="general_setting_is_applied_right_away">일반 설정은 변경 시 바로 적용이 됩니다.</string>
 
     <string name="initializing_setting">설정 초기화중&#8230;</string>
     <string name="initializing_setting_done">설정 초기화 완료!!</string>
 
+    <string name="stop">정지</string>
 
-    <!--UpdateService-->
-    <string name="colorize_running">Colorize 작동 중&#8230;</string>
+    <!--CroppingImageActivity-->
+    <string name="lock_screen_background_selection">잠금화면 배경 설정</string>
+    <string name="crop_image_to_use_as_background">배경 이미지 크롭</string>
+    <string name="lock_screen_background_selected">잠금화면 배경이 설정되었습니다</string>
+
+    <!--TextColorSettingActivity-->
+    <string name="lock_screen_digital_clock_text_color_selection">시계 폰트 색 설정</string>
+    <string name="select_from_text_color_recommendation">아래에서 추천 색을 선택해주세요</string>
+
+    <!--ColorGroupingService-->
+    <string name="colorize_running">Colorize</string>
     <string name="grouping_with_fixed_color_mode_running">[고정 컬러]</string>
     <string name="grouping_with_variable_color_mode_running">[가변 컬러]</string>
     <string name="click_to_configure_colorize">설정 변경하려면 클릭</string>
@@ -49,4 +46,5 @@
     <string name="error_no_data">에러: 데이터가 존재하지 않습니다!</string>
     <string name="background_image_file_dir_name">background</string>
     <string name="background_image_file_name">backgroundImageFile.png</string>
+
 </resources>

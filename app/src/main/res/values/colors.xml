@@ -11,13 +11,12 @@
     <color name="colorDivider">#B6B6B6</color>
 
     <color name="fixed_color_one">#F44336</color>
-    <color name="fixed_color_two">#FF9800</color>
-    <color name="fixed_color_three">#FFEB3B</color>
-    <color name="fixed_color_four">#4CAF50</color>
-    <color name="fixed_color_five">#2196F3</color>
-    <color name="fixed_color_six">#9C27B0</color>
-    <color name="fixed_color_seven">#FFFFFF</color>
-    <color name="fixed_color_eight">#000000</color>
+    <color name="fixed_color_two">#FFEB3B</color>
+    <color name="fixed_color_three">#4CAF50</color>
+    <color name="fixed_color_four">#2196F3</color>
+    <color name="fixed_color_five">#9C27B0</color>
+    <color name="fixed_color_six">#FFFFFF</color>
+    <color name="fixed_color_seven">#000000</color>
 
     <color name="status_bar_color">#40000000</color>
 

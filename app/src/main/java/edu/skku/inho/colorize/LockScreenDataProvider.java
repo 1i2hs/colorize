@@ -11,18 +11,21 @@ import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 
 /**
  * Created by XEiN on 2/11/16.
+ *
+ * Class for the object that holds every info necessary for LockScreenActivity.
+ * It was designed with Singleton pattern.
  */
 public class LockScreenDataProvider {
 	private static final String TAG = "LockScreenDataProvider";
-	private static ArrayList<ApplicationInfoBundle> mApplicationList;
-	private static ArrayList<GroupColor> mGroupColorList;
-	private static ApplicationInfoBundle[] mApplicationShortcutList = new ApplicationInfoBundle[4];
-
 	private static Context mContext;
-
+	private ArrayList<ApplicationInfoBundle> mApplicationList;
+	private ArrayList<GroupColor> mGroupColorList;
+	private ApplicationInfoBundle[] mApplicationShortcutList = new ApplicationInfoBundle[4];
 	private int mNumberOfGroupColors = Constants.DEFAULT_NUMBER_OF_GROUP_COLOR;
 	private boolean mIsLockScreenRunning = false;
 	private boolean mIsColorDataReady = false;
+
+	private int mDigitalClockTextColor = -1;
 
 	private LockScreenDataProvider() {}
 
@@ -108,7 +111,7 @@ public class LockScreenDataProvider {
 				if (applicationInfoBundle != null) {
 					return applicationInfoBundle;
 				} else {
-					applicationInfoBundle = makeApplicationInfo(getValueFromSharedPreferences(getApplicationShortcutKey(index)));
+					applicationInfoBundle = makeApplicationInfo(getStringValueFromSharedPreferences(getApplicationShortcutKey(index)));
 					if (applicationInfoBundle != null) {
 						mApplicationShortcutList[index] = applicationInfoBundle;
 						return applicationInfoBundle;
@@ -142,7 +145,7 @@ public class LockScreenDataProvider {
 		}
 	}
 
-	private String getValueFromSharedPreferences(String key) {
+	private String getStringValueFromSharedPreferences(String key) {
 		return PreferenceManager.getDefaultSharedPreferences(mContext).getString(key, null);
 	}
 
@@ -152,10 +155,6 @@ public class LockScreenDataProvider {
 
 	public void setUseApplicationShortcuts(boolean useApplicationShortcuts) {
 		PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean(Keys.APPLICATION_SHORTCUTS_USAGE, useApplicationShortcuts).apply();
-	}
-
-	private void saveIntoSharedPreferences(String key, int value) {
-		PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt(key, value).apply();
 	}
 
 	private void saveIntoSharedPreferences(String key, boolean value) {
@@ -178,8 +177,6 @@ public class LockScreenDataProvider {
 				return mGroupColorList.get(5);
 			case GroupColor.SEVENTH_COLOR:
 				return mGroupColorList.get(6);
-			case GroupColor.EIGHTH_COLOR:
-				return mGroupColorList.get(7);
 			default:
 				return null;
 		}
@@ -210,20 +207,39 @@ public class LockScreenDataProvider {
 	}
 
 	public int getGroupingMode() {
-		return PreferenceManager.getDefaultSharedPreferences(mContext).getInt(Keys.GROUPING_MODE, Constants.GROUPING_MODE_NOT_SELECTED);
+		return PreferenceManager.getDefaultSharedPreferences(mContext).getInt(Keys.GROUPING_MODE, Constants.GROUPING_WITH_FIXED_COLOR_MODE);
 	}
 
 	public void setGroupingMode(int groupingMode) {
 		PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt(Keys.GROUPING_MODE, groupingMode).apply();
 	}
 
-	public int getApplicationListChangeCheckingPeriodChoiceIndex() {
-		return PreferenceManager.getDefaultSharedPreferences(mContext)
-				.getInt(Keys.CHECKING_PERIOD_INDEX, Constants.DEFAULT_APPLICATION_LIST_CHANGE_CHECKING_PERIOD_TIME_INDEX);
+	public int getDigitalClockTextColor() {
+		if (mDigitalClockTextColor != -1) {
+			return mDigitalClockTextColor;
+		} else {
+			int color = getIntValueFromSharedPreferences(Keys.DIGITAL_CLOCK_FONT_COLOR);
+			if (color != -1) {
+				mDigitalClockTextColor = color;
+				return mDigitalClockTextColor;
+			} else {
+				mDigitalClockTextColor = Constants.DEFAULT_DIGITAL_CLOCK_FONT_COLOR;
+				return mDigitalClockTextColor;
+			}
+		}
 	}
 
-	public void setApplicationListChangeCheckingPeriodChoiceIndex(int index) {
-		PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt(Keys.CHECKING_PERIOD_INDEX, index).apply();
+	private int getIntValueFromSharedPreferences(String key) {
+		return PreferenceManager.getDefaultSharedPreferences(mContext).getInt(key, -1);
+	}
+
+	public void setDigitalClockTextColor(int digitalClockTextColor) {
+		mDigitalClockTextColor = digitalClockTextColor;
+		saveIntoSharedPreferences(Keys.DIGITAL_CLOCK_FONT_COLOR, digitalClockTextColor);
+	}
+
+	private void saveIntoSharedPreferences(String key, int value) {
+		PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt(key, value).apply();
 	}
 
 	private static class Singleton {

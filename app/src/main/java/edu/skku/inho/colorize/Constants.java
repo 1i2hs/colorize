@@ -9,9 +9,8 @@ public class Constants {
 	/**
 	 * constants for setting page(@link SettingActivity)
 	 */
-	public static final int GROUPING_MODE_NOT_SELECTED = -1;
-	public static final int GROUPING_WITH_FIXED_COLOR_MODE = 1;
-	public static final int GROUPING_WITH_VARIABLE_COLOR_MODE = 2;
+	public static final int GROUPING_WITH_FIXED_COLOR_MODE = 0;
+	public static final int GROUPING_WITH_VARIABLE_COLOR_MODE = 1;
 
 	public static final int LOCK_SCREEN_BACKGROUND_REQUEST = 1;
 
@@ -20,7 +19,6 @@ public class Constants {
 	public static final int THIRD_APPLICATION_SHORTCUT = 2;
 	public static final int FOURTH_APPLICATION_SHORTCUT = 3;
 	public static final int NUMBER_OF_APPLICATION_SHORTCUTS = 4;
-
 
 	/**
 	 * constants for number of group colors
@@ -32,15 +30,15 @@ public class Constants {
 	public static final int COLOR_DATA_NOT_READY = 0;
 
 	/**
-	 * default application list change checking period index
+	 * constants for ColorGroupingService
 	 */
-	public static final int DEFAULT_APPLICATION_LIST_CHANGE_CHECKING_PERIOD_TIME_INDEX = 3;
-
-	/**
-	 * constants for update service
-	 */
-	public static final int UPDATE_SERVICE_DESTROYED = 1;
+	public static final int COLOR_GROUPING_SERVICE_DESTROYED = 100;
 
 	public static final int LAUNCH_APPLICATION_MODE = 1;
 	public static final int SELECT_SHORTCUT_APPLICATION_MODE = 2;
+
+
+	public static final String UNLOCK = "unlock";
+
+	public static final int DEFAULT_DIGITAL_CLOCK_FONT_COLOR = 0xFFFFFF;
 }

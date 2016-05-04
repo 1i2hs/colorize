@@ -2,7 +2,7 @@ package edu.skku.inho.colorize;
 
 /**
  * Created by XEiN on 2/18/16.
- *
+ * <p/>
  * This class contains key values for intent, shared preference
  */
 public class Keys {
@@ -10,7 +10,6 @@ public class Keys {
 	 * key for shared preference in setting page(@link SettingActivity)
 	 */
 	public static final String GROUPING_MODE = "edu.skku.inho.colorize.grouping_mode";
-	public static final String CHECKING_PERIOD_INDEX = "edu.skku.inho.colorize.checking_period_index";
 	public static final String APPLICATION_SHORTCUTS_USAGE = "edu.skku.inho.colorize.application_shortcuts_usage";
 	public static final String FIRST_APPLICATION_SHORTCUT_PACKAGE_NAME = "edu.skku.inho.colorize.first_application_shortcut_package_name";
 	public static final String SECOND_APPLICATION_SHORTCUT_PACKAGE_NAME = "edu.skku.inho.colorize.second_application_shortcut_package_name";
@@ -22,12 +21,14 @@ public class Keys {
 	public static final String APPLICATION_SELECTION_MODE = "edu.skku.inho.colorize.application_selection_mode";
 	public static final String CLICKED_VIEW_X_COORDINATE = "edu.skku.inho.colorize.clicked_view_x_coordinate";
 	public static final String CLICKED_VIEW_Y_COORDINATE = "edu.skku.inho.colorize.clicked_view_y_coordinate";
+
+	public static final String DIGITAL_CLOCK_FONT_COLOR = "edu.skku.inho.colorize.digital_clock_font_color";
 	/**
-	 * keys for intent in update service
+	 * keys for intent in color grouping service
 	 */
 	// intent filter
-	public static final String UPDATE_SERVICE_BROADCAST = "edu.skku.inho.colorize.update_service_broadcast";
+	public static final String COLOR_GROUPING_SERVICE_BROADCAST = "edu.skku.inho.colorize.color_grouping_service_broadcast";
+	public static final String NOTIFICATION_BROADCAST = "edu.skku.inho.colorize.notification_broadcast";
 	// action
-	public static final String UPDATE_SERVICE_MESSAGE = "edu.skku.inho.colorize.update_service_message";
-
+	public static final String COLOR_GROUPING_SERVICE_MESSAGE = "edu.skku.inho.colorize.color_grouping_service_message";
 }

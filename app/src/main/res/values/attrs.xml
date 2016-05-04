@@ -9,7 +9,7 @@
         <attr name="metaButtonBarButtonStyle" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="DigitalClock">
+    <declare-styleable name="DigitalClockView">
         <attr name="dateFormat">
             <enum name="time" value="0"/>
             <enum name="date" value="1"/>

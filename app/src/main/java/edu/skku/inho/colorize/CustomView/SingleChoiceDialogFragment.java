@@ -1,4 +1,4 @@
-package edu.skku.inho.colorize.SettingPage;
+package edu.skku.inho.colorize.CustomView;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -12,15 +12,21 @@ import edu.skku.inho.colorize.R;
 /**
  * Created by XEiN on 2/20/16.
  */
-public class CheckingPeriodChoiceDialogFragment extends DialogFragment {
+public class SingleChoiceDialogFragment extends DialogFragment {
+	private static final String TITLE = "title";
+	private static final String SELECTION_LIST = "selection_list";
 	private static final String SELECTED_CHOICE_INDEX = "selected_choice_index";
-	private CheckingPeriodChoiceDialogFragmentInteraction mListener;
+	private SingleChoiceDialogFragmentInteraction mListener;
 
+	private int mTitleResId;
+	private int mSelectionListResId;
 	private int mChoiceIndex;
 
-	public static CheckingPeriodChoiceDialogFragment newInstance(int choiceIndex) {
-		CheckingPeriodChoiceDialogFragment fragment = new CheckingPeriodChoiceDialogFragment();
+	public static SingleChoiceDialogFragment newInstance(int titleResId, int selectionListResId, int choiceIndex) {
+		SingleChoiceDialogFragment fragment = new SingleChoiceDialogFragment();
 		Bundle args = new Bundle();
+		args.putInt(TITLE, titleResId);
+		args.putInt(SELECTION_LIST, selectionListResId);
 		args.putInt(SELECTED_CHOICE_INDEX, choiceIndex);
 		fragment.setArguments(args);
 		return fragment;
@@ -30,6 +36,8 @@ public class CheckingPeriodChoiceDialogFragment extends DialogFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (getArguments() != null) {
+			mTitleResId = getArguments().getInt(TITLE);
+			mSelectionListResId = getArguments().getInt(SELECTION_LIST);
 			mChoiceIndex = getArguments().getInt(SELECTED_CHOICE_INDEX);
 		}
 	}
@@ -38,8 +46,7 @@ public class CheckingPeriodChoiceDialogFragment extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		// Set the dialog title
-		builder.setTitle(R.string.application_list_change_checking_period_selection)
-				.setSingleChoiceItems(R.array.application_list_change_checking_periods, mChoiceIndex, new DialogInterface.OnClickListener() {
+		builder.setTitle(mTitleResId).setSingleChoiceItems(mSelectionListResId, mChoiceIndex, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						mChoiceIndex = which;
@@ -59,14 +66,14 @@ public class CheckingPeriodChoiceDialogFragment extends DialogFragment {
 	@Override
 	public void onAttach(Context context) {
 		super.onAttach(context);
-		if (context instanceof CheckingPeriodChoiceDialogFragmentInteraction) {
-			mListener = (CheckingPeriodChoiceDialogFragmentInteraction) context;
+		if (context instanceof SingleChoiceDialogFragmentInteraction) {
+			mListener = (SingleChoiceDialogFragmentInteraction) context;
 		} else {
 			throw new RuntimeException(context.toString() + " must implement OnApplicationListFragmentInteraction");
 		}
 	}
 
-	public interface CheckingPeriodChoiceDialogFragmentInteraction {
+	public interface SingleChoiceDialogFragmentInteraction {
 		void onClickConfirmButton(int index);
 	}
 }

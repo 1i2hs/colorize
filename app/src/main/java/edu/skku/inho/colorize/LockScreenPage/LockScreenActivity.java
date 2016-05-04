@@ -1,8 +1,9 @@
 package edu.skku.inho.colorize.LockScreenPage;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -22,6 +23,8 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -34,35 +37,51 @@ import edu.skku.inho.colorize.ApplicationInfoBundle;
 import edu.skku.inho.colorize.ApplicationListDialog.ApplicationListFragment;
 import edu.skku.inho.colorize.Constants;
 import edu.skku.inho.colorize.CroppingBackgroundPage.BackgroundImageFileChangedDateSignature;
+import edu.skku.inho.colorize.CustomView.CircleView;
+import edu.skku.inho.colorize.CustomView.DigitalClockView;
 import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 import edu.skku.inho.colorize.Keys;
 import edu.skku.inho.colorize.LockScreenDataProvider;
 import edu.skku.inho.colorize.R;
-import edu.skku.inho.colorize.RoundView;
 
 public class LockScreenActivity extends AppCompatActivity implements ApplicationListFragment.OnApplicationListFragmentInteraction,
-		View.OnClickListener {
+		View.OnClickListener,
+		View.OnTouchListener,
+		View.OnDragListener {
 	private final static String TAG = "LockScreenActivity";
 
 	private ImageView mBackgroundImageView;
 
-	private View mSelectionCircleView;
+	private FrameLayout mBackgroundShadeFrameLayout;
 
-	private IconDragEventListener mIconDragEventListener;
+	private DigitalClockView mDigitalClockTimeView;
+	private DigitalClockView mDigitalClockDateView;
+
+	private View mSelectionView;
 
 	private ApplicationInfoBundle[] mApplicationShortcut = new ApplicationInfoBundle[4];
 
+	private float mTargetStraightTransitionValue;
+	private float mTargetDiagonalTransitionValue;
+	private float mLastStraightTransitionValue = 0.0F;
+	private float mLastDiagonalTransitionValue = 0.0F;
+
+	private boolean mIsSelectionViewBackgroundChanged = false;
+
+	// receiver that is executed when ColorGroupingService re-computes the group colors due to
+	// changes of application packages such as update, deletion, installation, etc. This receiver
+	// is executed only when the service recomputes the group color while this activity is running.
 	private BroadcastReceiver mServiceStateReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			int messageFlag = intent.getIntExtra(Keys.UPDATE_SERVICE_MESSAGE, -1);
+			int messageFlag = intent.getIntExtra(Keys.COLOR_GROUPING_SERVICE_MESSAGE, -1);
 			if (messageFlag == Constants.COLOR_DATA_READY) {
 				configureColorCircles();
 				configureSelectionCircle();
 				configureApplicationShortcuts();
 			}
 
-			if (messageFlag == Constants.UPDATE_SERVICE_DESTROYED) {
+			if (messageFlag == Constants.COLOR_GROUPING_SERVICE_DESTROYED) {
 				finish();
 			}
 		}
@@ -76,22 +95,29 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 		getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			getWindow().setStatusBarColor(getColor(R.color.status_bar_color));
 		} else {
 			getWindow().setStatusBarColor(getResources().getColor(R.color.status_bar_color));
 		}
 
-		LocalBroadcastManager.getInstance(this).registerReceiver(mServiceStateReceiver, new IntentFilter(Keys.UPDATE_SERVICE_BROADCAST));
+		LocalBroadcastManager.getInstance(this).registerReceiver(mServiceStateReceiver, new IntentFilter(Keys.COLOR_GROUPING_SERVICE_BROADCAST));
 
 		configureBackground();
 		// check whether the computed color data is ready
 		if (LockScreenDataProvider.getInstance(this).isColorDataReady() && LockScreenDataProvider.getInstance(this).isLockScreenRunning()) {
-			configureColorCircles();
+			mTargetStraightTransitionValue = getResources().getDimensionPixelSize(R.dimen.color_circle_straight_transition_value);
+			mTargetDiagonalTransitionValue = getResources().getDimensionPixelSize(R.dimen.color_circle_diagonal_transition_value);
+
+			configureBackgroundShade();
+			configureDigitalClock();
 			configureSelectionCircle();
+			configureColorCircles();
+			configureUnlockCircle();
 			configureApplicationShortcuts();
 		} else {
-			// this branch is passed when the UpdateService has been stopped abnormally
+			// this branch is passed when the ColorGroupingService has been stopped abnormally
 			Toast.makeText(this, R.string.update_service_not_running, Toast.LENGTH_LONG).show();
 			finish();
 		}
@@ -109,12 +135,35 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 		Log.d(TAG, "LockScreenActivity Destroyed...");
 	}
 
-	private void configureBackground() {
+	protected void configureBackground() {
 		mBackgroundImageView = (ImageView) findViewById(R.id.imageView_background);
 
 		File imageFile = new File(getDir(getResources().getString(R.string.background_image_file_dir_name), ContextWrapper.MODE_PRIVATE),
 				getResources().getString(R.string.background_image_file_name));
 		Glide.with(this).load(imageFile).signature(new BackgroundImageFileChangedDateSignature(imageFile.lastModified())).into(mBackgroundImageView);
+	}
+
+	protected void configureBackgroundShade() {
+		mBackgroundShadeFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_background_shade);
+		mBackgroundShadeFrameLayout.setAlpha(0.0F);
+	}
+
+	protected void configureDigitalClock() {
+		mDigitalClockTimeView = (DigitalClockView) findViewById(R.id.digitalClockView_time);
+		mDigitalClockDateView = (DigitalClockView) findViewById(R.id.digitalClockView_date);
+
+		int textColor = LockScreenDataProvider.getInstance(this).getDigitalClockTextColor();
+		mDigitalClockTimeView.setTextColor(textColor);
+		mDigitalClockDateView.setTextColor(textColor);
+	}
+
+	/**
+	 * get instance of circle image for selecting color from xml file and
+	 * set OnDragListener to detect which color is dragged into the circle image
+	 */
+	protected void configureSelectionCircle() {
+		mSelectionView = findViewById(R.id.view_selection_circle);
+		mSelectionView.setOnTouchListener(this);
 	}
 
 	/**
@@ -124,68 +173,53 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 	 */
 	protected void configureColorCircles() {
 		ArrayList<GroupColor> groupColorPointList = LockScreenDataProvider.getInstance(this).getGroupColorList();
-		for (int i = 0; i < 8; i++) {
-			RoundView colorCircle;
+		for (int i = 0; i < 7; i++) {
+			CircleView colorCircleView;
 
 			switch (i) {
 				case 0:
-					colorCircle = (RoundView) findViewById(R.id.view_first_color_circle);
-					colorCircle.setTag(GroupColor.FIRST_COLOR);
+					colorCircleView = (CircleView) findViewById(R.id.view_first_color_circle);
+					colorCircleView.setTag(GroupColor.FIRST_COLOR);
 					break;
 				case 1:
-					colorCircle = (RoundView) findViewById(R.id.view_second_color_circle);
-					colorCircle.setTag(GroupColor.SECOND_COLOR);
+					colorCircleView = (CircleView) findViewById(R.id.view_second_color_circle);
+					colorCircleView.setTag(GroupColor.SECOND_COLOR);
 					break;
 				case 2:
-					colorCircle = (RoundView) findViewById(R.id.view_third_color_circle);
-					colorCircle.setTag(GroupColor.THIRD_COLOR);
+					colorCircleView = (CircleView) findViewById(R.id.view_third_color_circle);
+					colorCircleView.setTag(GroupColor.THIRD_COLOR);
 					break;
 				case 3:
-					colorCircle = (RoundView) findViewById(R.id.view_fourth_color_circle);
-					colorCircle.setTag(GroupColor.FOURTH_COLOR);
+					colorCircleView = (CircleView) findViewById(R.id.view_fourth_color_circle);
+					colorCircleView.setTag(GroupColor.FOURTH_COLOR);
 					break;
 				case 4:
-					colorCircle = (RoundView) findViewById(R.id.view_fifth_color_circle);
-					colorCircle.setTag(GroupColor.FIFTH_COLOR);
+					colorCircleView = (CircleView) findViewById(R.id.view_fifth_color_circle);
+					colorCircleView.setTag(GroupColor.FIFTH_COLOR);
 					break;
 				case 5:
-					colorCircle = (RoundView) findViewById(R.id.view_sixth_color_circle);
-					colorCircle.setTag(GroupColor.SIXTH_COLOR);
+					colorCircleView = (CircleView) findViewById(R.id.view_sixth_color_circle);
+					colorCircleView.setTag(GroupColor.SIXTH_COLOR);
 					break;
 				case 6:
-					colorCircle = (RoundView) findViewById(R.id.view_seventh_color_circle);
-					colorCircle.setTag(GroupColor.SEVENTH_COLOR);
-					break;
-				case 7:
-					colorCircle = (RoundView) findViewById(R.id.view_eighth_color_circle);
-					colorCircle.setTag(GroupColor.EIGHTH_COLOR);
+					colorCircleView = (CircleView) findViewById(R.id.view_seventh_color_circle);
+					colorCircleView.setTag(GroupColor.SEVENTH_COLOR);
 					break;
 				default:
 					Log.e(TAG, "number of color circle is overflown");
-					colorCircle = null;
+					colorCircleView = null;
 					break;
 			}
-			colorCircle.setColor(groupColorPointList.get(i).getARGBColor());
-			colorCircle.setOnTouchListener(new OnColorTouchListener());
+			colorCircleView.setColor(groupColorPointList.get(i).getARGBColor());
+			colorCircleView.setOnDragListener(this);
+			//colorCircleView.setOnTouchListener(new OnSelectionCircleTouchListener());
 		}
 	}
 
-	/**
-	 * get instance of circle image for selecting color from xml file and
-	 * set OnDragListener to detect which color is dragged into the circle image
-	 */
-	protected void configureSelectionCircle() {
-		mSelectionCircleView = findViewById(R.id.view_selection_circle);
-
-		mIconDragEventListener = new IconDragEventListener();
-
-		mSelectionCircleView.setOnDragListener(mIconDragEventListener);
-		mSelectionCircleView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+	protected void configureUnlockCircle() {
+		CircleView unlockCircle = (CircleView) findViewById(R.id.view_unlock_circle);
+		unlockCircle.setTag(Constants.UNLOCK);
+		unlockCircle.setOnDragListener(this);
 	}
 
 	protected void configureApplicationShortcuts() {
@@ -209,7 +243,7 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 		if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
 			Fragment fragment;
 			if ((fragment = getSupportFragmentManager().findFragmentByTag("application_list_fragment")) != null) {
-				((ApplicationListFragment) fragment).concealApplicationListView();
+				((ApplicationListFragment) fragment).concealApplicationList();
 				return;
 			}
 		}
@@ -253,47 +287,197 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 		finish();
 	}
 
-	private static class OnColorTouchListener implements View.OnTouchListener {
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			Log.d(TAG, "onTouch");
-			// Create a new ClipData.Item from the ImageView object's tag
-			ClipData.Item item = new ClipData.Item((String) v.getTag());
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		// Instantiates the drag shadow builder.
+		View.DragShadowBuilder myShadow = new SelectionCircleShadowBuilder(v);
 
-			// Create a new ClipData using the tag as a label, the plain text MIME type, and
-			// the already-created item. This will create a new ClipDescription object within the
-			// ClipData, and set its MIME type entry to "text/plain"
-			ClipData dragData = new ClipData((String) v.getTag(), new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
+		// Starts the drag
+		v.startDrag(null,  // the data to be dragged
+				myShadow,  // the drag shadow builder
+				null,      // no need to use local data
+				0          // flags (not currently used, set to 0)
+		);
+		return true;
+	}
 
-			// Instantiates the drag shadow builder.
-			View.DragShadowBuilder myShadow = new ColorIconShadowBuilder(v);
+	public boolean onDrag(View v, DragEvent event) {
+		final int action = event.getAction();
 
-			// Starts the drag
+		switch (action) {
+			case DragEvent.ACTION_DRAG_STARTED:
+				if (!mIsSelectionViewBackgroundChanged) {
+					AnimatorSet animatorSet = new AnimatorSet();
+					ObjectAnimator alphaAnimator1 = ObjectAnimator.ofFloat(mBackgroundShadeFrameLayout, "alpha", 0.0F, 1.0F);
+					ObjectAnimator alphaAnimator2 = ObjectAnimator.ofFloat(mSelectionView, "alpha", 1.0F, 0.0F);
+					animatorSet.playTogether(alphaAnimator1, alphaAnimator2);
+					animatorSet.start();
+					mIsSelectionViewBackgroundChanged = true;
+				}
+				// Returns false. During the current drag and drop operation, this View will
+				// not receive events again until ACTION_DRAG_ENDED is sent.
+				toggleColorCircles(v, true);
+				return true;
+			case DragEvent.ACTION_DRAG_ENTERED:
+				// Invalidate the view to force a redraw in the new tint
+				v.invalidate();
+				return true;
+			case DragEvent.ACTION_DRAG_LOCATION:
+				// Ignore the event
+				return true;
+			case DragEvent.ACTION_DRAG_EXITED:
+				// Invalidate the view to force a redraw in the new tint
+				v.invalidate();
 
-			v.startDrag(dragData,  // the data to be dragged
-					myShadow,  // the drag shadow builder
-					null,      // no need to use local data
-					0          // flags (not currently used, set to 0)
-			);
+				return true;
+			case DragEvent.ACTION_DROP:
+				if (mLastStraightTransitionValue == mTargetStraightTransitionValue) {
+					String selectedColor = (String) v.getTag();
 
-			return true;
+					// Invalidates the view to force a redraw
+					v.invalidate();
+
+					if (selectedColor.equals(Constants.UNLOCK)) {
+						finish();
+					} else {
+						ApplicationListFragment applicationListFragment = ApplicationListFragment
+								.newInstance(selectedColor, Constants.LAUNCH_APPLICATION_MODE, event.getX() + v.getLeft(), event.getY() + v.getTop());
+						FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+						fragmentTransaction.add(android.R.id.content, applicationListFragment, "application_list_fragment");
+						fragmentTransaction.addToBackStack(null);
+						fragmentTransaction.commit();
+					}
+					// Returns true. DragEvent.getResult() will return true.
+					return true;
+				}
+				return false;
+			case DragEvent.ACTION_DRAG_ENDED:
+				if (mIsSelectionViewBackgroundChanged) {
+					AnimatorSet animatorSet = new AnimatorSet();
+					ObjectAnimator alphaAnimator1 = ObjectAnimator.ofFloat(mBackgroundShadeFrameLayout, "alpha", 1.0F, 0.0F);
+					ObjectAnimator alphaAnimator2 = ObjectAnimator.ofFloat(mSelectionView, "alpha", 0.0F, 1.0F);
+					animatorSet.playTogether(alphaAnimator1, alphaAnimator2);
+					animatorSet.start();
+					mIsSelectionViewBackgroundChanged = false;
+				}
+				toggleColorCircles(v, false);
+				// Invalidates the view to force a redraw
+				v.invalidate();
+				return true;
+			// An unknown action type was received.
+			default:
+				Log.e(TAG, "Unknown action type received by OnDragListener.");
+				break;
+		}
+
+		return false;
+	}
+
+	private void toggleColorCircles(View colorCircleView, boolean spread) {
+		if (colorCircleView.getTag() != null) {
+			float initStraightTransitionValue = 0.0F;
+			float targetStraightTransitionValue = 0.0F;
+			float initDiagonalTransitionValue = 0.0F;
+			float targetDiagonalTransitionValue = 0.0F;
+
+			AnimatorSet spreadAnimatorSet = new AnimatorSet();
+			ObjectAnimator translationXObjectAnimator;
+			ObjectAnimator translationYObjectAnimator;
+
+			if (spread) {
+				spreadAnimatorSet.setInterpolator(new AccelerateInterpolator());
+				spreadAnimatorSet.setDuration(200);
+				targetStraightTransitionValue = mTargetStraightTransitionValue;
+				targetDiagonalTransitionValue = mTargetDiagonalTransitionValue;
+			} else {
+				spreadAnimatorSet.setInterpolator(new AccelerateInterpolator());
+				spreadAnimatorSet.setDuration(300);
+				initStraightTransitionValue = mLastStraightTransitionValue;
+				initDiagonalTransitionValue = mLastDiagonalTransitionValue;
+			}
+
+			String tag = (String) colorCircleView.getTag();
+			switch (tag) {
+				case GroupColor.FIRST_COLOR:
+					translationYObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationY", -initStraightTransitionValue, -targetStraightTransitionValue);
+					spreadAnimatorSet.play(translationYObjectAnimator);
+					break;
+				case GroupColor.SECOND_COLOR:
+					translationXObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationX", initDiagonalTransitionValue, targetDiagonalTransitionValue);
+					translationYObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationY", -initDiagonalTransitionValue, -targetDiagonalTransitionValue);
+					translationXObjectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+						@Override
+						public void onAnimationUpdate(ValueAnimator animation) {
+							mLastDiagonalTransitionValue = (float) animation.getAnimatedValue();
+						}
+					});
+					spreadAnimatorSet.playTogether(translationXObjectAnimator, translationYObjectAnimator);
+					break;
+				case GroupColor.THIRD_COLOR:
+					translationXObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationX", initStraightTransitionValue, targetStraightTransitionValue);
+					translationXObjectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+						@Override
+						public void onAnimationUpdate(ValueAnimator animation) {
+							mLastStraightTransitionValue = (float) animation.getAnimatedValue();
+						}
+					});
+					spreadAnimatorSet.play(translationXObjectAnimator);
+					break;
+				case GroupColor.FOURTH_COLOR:
+					translationXObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationX", initDiagonalTransitionValue, targetDiagonalTransitionValue);
+					translationYObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationY", initDiagonalTransitionValue, targetDiagonalTransitionValue);
+					spreadAnimatorSet.playTogether(translationXObjectAnimator, translationYObjectAnimator);
+					break;
+				case GroupColor.FIFTH_COLOR:
+					translationXObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationX", -initDiagonalTransitionValue, -targetDiagonalTransitionValue);
+					translationYObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationY", initDiagonalTransitionValue, targetDiagonalTransitionValue);
+					spreadAnimatorSet.playTogether(translationXObjectAnimator, translationYObjectAnimator);
+					break;
+				case GroupColor.SIXTH_COLOR:
+					translationXObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationX", -initStraightTransitionValue, -targetStraightTransitionValue);
+					spreadAnimatorSet.play(translationXObjectAnimator);
+					break;
+				case GroupColor.SEVENTH_COLOR:
+					translationXObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationX", -initDiagonalTransitionValue, -targetDiagonalTransitionValue);
+					translationYObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationY", -initDiagonalTransitionValue, -targetDiagonalTransitionValue);
+					spreadAnimatorSet.playTogether(translationXObjectAnimator, translationYObjectAnimator);
+					break;
+				case Constants.UNLOCK:
+					translationYObjectAnimator = ObjectAnimator
+							.ofFloat(colorCircleView, "translationY", initStraightTransitionValue, targetStraightTransitionValue);
+					spreadAnimatorSet.play(translationYObjectAnimator);
+					break;
+			}
+			spreadAnimatorSet.start();
 		}
 	}
 
-	private static class ColorIconShadowBuilder extends View.DragShadowBuilder {
+	private static class SelectionCircleShadowBuilder extends View.DragShadowBuilder {
 
 		// The drag shadow image, defined as a drawable thing
 		private static Drawable shadow;
 
 		// Defines the constructor for myDragShadowBuilder
-		public ColorIconShadowBuilder(View roundColorView) {
+		public SelectionCircleShadowBuilder(View selectionCircleView) {
 
 			// Stores the View parameter passed to myDragShadowBuilder.
-			super(roundColorView);
+			super(selectionCircleView);
 
 			// Creates a draggable image that will fill the Canvas provided by the system.
-			GradientDrawable gradientDrawable = (GradientDrawable) roundColorView.getContext().getDrawable(R.drawable.shape_color_circle);
-			gradientDrawable.setColor(((RoundView) roundColorView).getColor());
+			GradientDrawable gradientDrawable = (GradientDrawable) selectionCircleView.getContext().getDrawable(R.drawable.shape_select_circle);
+			//gradientDrawable.setColor(((RoundView) selectionCircleView).getColor());
+
 			shadow = gradientDrawable;
 		}
 
@@ -305,10 +489,10 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 			int width, height;
 
 			// Sets the width of the shadow to half the width of the original View
-			width = getView().getWidth();
+			width = (int) (getView().getWidth() * 0.8F);
 
 			// Sets the height of the shadow to half the height of the original View
-			height = getView().getHeight();
+			height = (int) (getView().getHeight() * 0.8F);
 
 			// The drag shadow is a ColorDrawable. This sets its dimensions to be the same as the
 			// Canvas that the system will provide. As a result, the drag shadow will fill the
@@ -331,104 +515,5 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 			shadow.draw(canvas);
 		}
 	}
-
-	protected class IconDragEventListener implements View.OnDragListener {
-
-		// This is the method that the system calls when it dispatches a drag event to the
-		// listener.
-		public boolean onDrag(View v, DragEvent event) {
-
-			// Defines a variable to store the action type for the incoming event
-			final int action = event.getAction();
-
-			// Handles each of the expected events
-			switch (action) {
-				case DragEvent.ACTION_DRAG_STARTED:
-					// Determines if this View can accept the dragged data
-					if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-
-						// As an example of what your application might do,
-						// applies a blue color tint to the View to indicate that it can accept
-						// data.
-
-						// Invalidate the view to force a redraw in the new tint
-						v.invalidate();
-
-						// returns true to indicate that the View can accept the dragged data.
-						return true;
-
-					}
-
-					// Returns false. During the current drag and drop operation, this View will
-					// not receive events again until ACTION_DRAG_ENDED is sent.
-					return false;
-
-				case DragEvent.ACTION_DRAG_ENTERED:
-					// Applies a green tint to the View. Return true; the return value is ignored.
-
-
-					// Invalidate the view to force a redraw in the new tint
-					v.invalidate();
-
-					return true;
-
-				case DragEvent.ACTION_DRAG_LOCATION:
-
-					// Ignore the event
-					return true;
-
-				case DragEvent.ACTION_DRAG_EXITED:
-					// Re-sets the color tint to blue. Returns true; the return value is ignored.
-
-					// Invalidate the view to force a redraw in the new tint
-					v.invalidate();
-
-					return true;
-
-				case DragEvent.ACTION_DROP:
-					// Gets the item containing the dragged data
-					ClipData.Item item = event.getClipData().getItemAt(0);
-
-					// Gets the text data from the item.
-					String selectedColor = item.getText().toString();
-
-					// Invalidates the view to force a redraw
-					v.invalidate();
-
-					ApplicationListFragment applicationListFragment = ApplicationListFragment
-							.newInstance(selectedColor, Constants.LAUNCH_APPLICATION_MODE, event.getX() + v.getLeft(), event.getY() + v.getTop());
-					FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-					fragmentTransaction.add(android.R.id.content, applicationListFragment, "application_list_fragment");
-					fragmentTransaction.addToBackStack(null);
-					fragmentTransaction.commit();
-
-					// Returns true. DragEvent.getResult() will return true.
-					return true;
-
-				case DragEvent.ACTION_DRAG_ENDED:
-					// Turns off any color tinting
-
-					// Invalidates the view to force a redraw
-					v.invalidate();
-
-					/*if (event.getResult()) {
-						Toast.makeText(v.getContext(), "The drop was handled.", Toast.LENGTH_LONG).show();
-					} else {
-						Toast.makeText(v.getContext(), "The drop didn't work.", Toast.LENGTH_LONG).show();
-					}*/
-
-					// returns true; the value is ignored.
-					return true;
-
-				// An unknown action type was received.
-				default:
-					Log.e("DragDrop Example", "Unknown action type received by OnDragListener.");
-					break;
-			}
-
-			return false;
-		}
-	}
-
 
 }

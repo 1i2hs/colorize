@@ -55,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
 					}
 				}, 1000);
 			}
-		}, 1500);
+		}, 800);
 	}
 
 	private void makeApplicationList(List<ResolveInfo> applicationResolveInfoList) {

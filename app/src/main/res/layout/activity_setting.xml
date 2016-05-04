@@ -25,97 +25,15 @@
             android:transitionName="brandIcon"/>
 
         <TextView
-            android:id="@+id/textView_mode_title"
+            android:id="@+id/textView_general_setting_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="32dp"
             android:paddingLeft="8dp"
-            android:text="@string/group_mode_title"
-            android:textColor="@android:color/white"
-            android:textSize="16dp"/>
-
-        <TextView
-            android:id="@+id/textView_mode_setting_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:text="@string/restart_of_lock_screen_is_required_to_apply_change_of_grouping_mode_setting"
-            android:textColor="@color/colorTernaryText"
-            android:textSize="12dp"/>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/cardView_grouping_mode_setting"
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            card_view:cardCornerRadius="4dp"
-            card_view:cardElevation="4dp"
-            card_view:contentPadding="16dp">
-
-            <RadioGroup
-                android:id="@+id/radioGroup_grouping_mode_setting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true">
-
-                <RadioButton
-                    android:id="@+id/radioButton_fixed_color_grouping_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="32dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/grouping_with_fixed_color_mode"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textSize="16dp"/>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@color/colorDivider">
-                </FrameLayout>
-
-                <RadioButton
-                    android:id="@+id/radioButton_variable_color_grouping_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="32dp"
-                    android:text="@string/grouping_with_variable_color_mode"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textSize="16dp"/>
-
-            </RadioGroup>
-        </android.support.v7.widget.CardView>
-
-        <TextView
-            android:id="@+id/textView_general_setting_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:paddingLeft="8dp"
             android:text="@string/general_setting_title"
             android:textColor="@android:color/white"
             android:textSize="16dp"/>
-
-        <TextView
-            android:id="@+id/general_setting_is_applied_right_away"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:text="@string/general_setting_is_applied_right_away"
-            android:textColor="@color/colorTernaryText"
-            android:textSize="12dp"/>
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardView_general_setting"
@@ -135,42 +53,6 @@
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:id="@+id/relativeLayout_application_list_change_check_period_setting"
-                    android:layout_width="match_parent"
-                    android:layout_height="32dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:id="@+id/textView_application_list_change_check_period_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:text="@string/application_list_change_checking_period"
-                        android:textColor="@color/colorPrimaryText"
-                        android:textSize="16dp"/>
-
-                    <TextView
-                        android:id="@+id/textView_application_list_change_check_period"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:text="30초"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16dp"/>
-
-                </RelativeLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@color/colorDivider">
-                </FrameLayout>
-
                 <TextView
                     android:id="@+id/textView_lock_screen_background_selection"
                     android:layout_width="match_parent"
@@ -179,6 +61,23 @@
                     android:clickable="true"
                     android:gravity="center_vertical"
                     android:text="@string/lock_screen_background_selection"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="16dp"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/colorDivider"/>
+
+                <TextView
+                    android:id="@+id/textView_lock_screen_digital_clock_text_color_selection"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/lock_screen_digital_clock_text_color_selection"
                     android:textColor="@color/colorPrimaryText"
                     android:textSize="16dp"/>
 
@@ -321,12 +220,66 @@
 
         </android.support.v7.widget.CardView>
 
+        <TextView
+            android:id="@+id/textView_mode_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="8dp"
+            android:text="@string/advanced_setting_title"
+            android:textColor="@android:color/white"
+            android:textSize="16dp"/>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView_grouping_mode_setting"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardElevation="4dp"
+            card_view:contentPadding="16dp">
+
+            <LinearLayout
+                android:id="@+id/linearLayout_grouping_mode_selection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView_grouping_mode_selection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:gravity="center_vertical"
+                    android:text="@string/group_mode_title"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="16dp"/>
+
+                <TextView
+                    android:id="@+id/textView_selected_grouping_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/colorSecondaryText"
+                    android:textSize="14dp"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
         <Button
-            android:id="@+id/button_start_application"
+            android:id="@+id/button_toggle_application"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="false"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="32dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="48dp"
@@ -334,20 +287,6 @@
             android:text="@string/start_lock_screen"
             android:textColor="@android:color/white"
             android:textSize="16dp"/>
-
-        <Button
-            android:id="@+id/button_stop_application"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:layout_marginBottom="32dp"
-            android:layout_marginTop="32dp"
-            android:background="@null"
-            android:clickable="true"
-            android:text="@string/stop_lock_screen"
-            android:textColor="@color/colorDivider"
-            android:textSize="14dp"/>
 
     </LinearLayout>
 
