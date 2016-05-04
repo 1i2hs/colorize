@@ -49,7 +49,7 @@ public class CroppingImageActivity extends AppCompatActivity {
 
 	private void configureToolbar() {
 		setSupportActionBar(mToolbar);
-		mToolbar.setTitle(R.string.crop_image_to_use_as_background);
+		getSupportActionBar().setTitle(R.string.crop_image_to_use_as_background);
 		mToolbar.setSubtitle(R.string.lock_screen_background_selection);
 		mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener() {

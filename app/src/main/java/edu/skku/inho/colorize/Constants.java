@@ -39,6 +39,4 @@ public class Constants {
 
 
 	public static final String UNLOCK = "unlock";
-
-	public static final int DEFAULT_DIGITAL_CLOCK_FONT_COLOR = 0xFFFFFF;
 }

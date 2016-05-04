@@ -223,7 +223,7 @@ public class LockScreenDataProvider {
 				mDigitalClockTextColor = color;
 				return mDigitalClockTextColor;
 			} else {
-				mDigitalClockTextColor = Constants.DEFAULT_DIGITAL_CLOCK_FONT_COLOR;
+				mDigitalClockTextColor = mContext.getResources().getColor(R.color.colorTernaryText);
 				return mDigitalClockTextColor;
 			}
 		}

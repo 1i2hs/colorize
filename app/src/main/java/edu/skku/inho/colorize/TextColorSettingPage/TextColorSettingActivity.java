@@ -35,7 +35,7 @@ public class TextColorSettingActivity extends AppCompatActivity {
 	private DigitalClockView mDigitalClockDateView;
 	private LinearLayout mRecommendedColorListLinearLayout;
 
-	private int mSelectedColor;
+	private int mSelectedColor = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,7 @@ public class TextColorSettingActivity extends AppCompatActivity {
 
 	private void configureToolbar() {
 		setSupportActionBar(mToolbar);
-		mToolbar.setTitle(R.string.lock_screen_digital_clock_text_color_selection);
+		getSupportActionBar().setTitle(R.string.lock_screen_digital_clock_text_color_selection);
 		mToolbar.setSubtitle(R.string.select_from_text_color_recommendation);
 		mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
