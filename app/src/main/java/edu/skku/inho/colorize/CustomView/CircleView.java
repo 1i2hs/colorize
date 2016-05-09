@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.GridView;
 
 /**
- * Created by XEiN on 1/26/16.
+ * Created by In-Ho Han on 1/26/16.
  */
 public class CircleView extends View {
 

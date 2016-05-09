@@ -22,9 +22,7 @@ import edu.skku.inho.colorize.R;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link InitializingSettingFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Created by In-Ho Han on 2/11/16.
  */
 public class InitializingSettingFragment extends Fragment {
 	private ProgressBar mInitializingSettingProgressBar;

@@ -1,39 +1,49 @@
 package edu.skku.inho.colorize;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import edu.skku.inho.colorize.CroppingBackgroundPage.BackgroundImageFileChangedDateSignature;
 import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 
 /**
- * Created by XEiN on 2/11/16.
+ * Created by In-Ho Han on 2/11/16.
  *
  * Class for the object that holds every info necessary for LockScreenActivity.
  * It was designed with Singleton pattern.
  */
-public class LockScreenDataProvider {
-	private static final String TAG = "LockScreenDataProvider";
+public class LockScreenDataManager {
+	private static final String TAG = "LockScreenDataManager";
 	private static Context mContext;
 	private ArrayList<ApplicationInfoBundle> mApplicationList;
 	private ArrayList<GroupColor> mGroupColorList;
 	private ApplicationInfoBundle[] mApplicationShortcutList = new ApplicationInfoBundle[4];
 	private int mNumberOfGroupColors = Constants.DEFAULT_NUMBER_OF_GROUP_COLOR;
-	private boolean mIsLockScreenRunning = false;
+	private int mLockScreenRunningState = Constants.LOCK_SCREEN_RUNNING_STATE_NOT_DEFINED;
 	private boolean mIsColorDataReady = false;
 
 	private int mDigitalClockTextColor = -1;
 
-	private LockScreenDataProvider() {}
+	private LockScreenDataManager() {}
 
-	public static LockScreenDataProvider initInstance(Context context) {
+	public static LockScreenDataManager initInstance(Context context) {
 		return getInstance(context);
 	}
 
-	public static LockScreenDataProvider getInstance(Context context) {
+	public static LockScreenDataManager getInstance(Context context) {
 		if (mContext == null) {
 			mContext = context;
 		}
@@ -191,11 +201,26 @@ public class LockScreenDataProvider {
 	}
 
 	public boolean isLockScreenRunning() {
-		return mIsLockScreenRunning;
+		if (mLockScreenRunningState == Constants.LOCK_SCREEN_RUNNING_STATE_NOT_DEFINED) {
+			mLockScreenRunningState = PreferenceManager.getDefaultSharedPreferences(mContext)
+					.getInt(Keys.LOCK_SCREEN_RUNNING_STATE, Constants.LOCK_SCREEN_NOT_RUNNING);
+		}
+		return mLockScreenRunningState == Constants.LOCK_SCREEN_RUNNING;
 	}
 
 	public void setIsLockScreenRunning(boolean isLockScreenRunning) {
-		mIsLockScreenRunning = isLockScreenRunning;
+		int lockScreenState;
+		if (isLockScreenRunning) {
+			lockScreenState = Constants.LOCK_SCREEN_RUNNING;
+		} else {
+			lockScreenState = Constants.LOCK_SCREEN_NOT_RUNNING;
+		}
+		mLockScreenRunningState = lockScreenState;
+		saveIntoSharedPreferences(Keys.LOCK_SCREEN_RUNNING_STATE, lockScreenState);
+	}
+
+	private void saveIntoSharedPreferences(String key, int value) {
+		PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt(key, value).apply();
 	}
 
 	public boolean isColorDataReady() {
@@ -238,11 +263,42 @@ public class LockScreenDataProvider {
 		saveIntoSharedPreferences(Keys.DIGITAL_CLOCK_FONT_COLOR, digitalClockTextColor);
 	}
 
-	private void saveIntoSharedPreferences(String key, int value) {
-		PreferenceManager.getDefaultSharedPreferences(mContext).edit().putInt(key, value).apply();
+	public void saveBackgroundImageIntoInternalStorage(Bitmap bitmap) {
+		// Log.d(TAG, String.valueOf(bitmap));
+
+		File backgroundImageFilePath = mContext
+				.getDir(mContext.getResources().getString(R.string.background_image_file_dir_name), ContextWrapper.MODE_PRIVATE);
+		File backgroundImageFile = new File(backgroundImageFilePath, mContext.getResources().getString(R.string.background_image_file_name));
+		FileOutputStream out = null;
+
+		Log.i(TAG, "Background image file updated: " + backgroundImageFile.delete());
+
+		try {
+			backgroundImageFile.createNewFile();
+			out = new FileOutputStream(backgroundImageFile);
+
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void applyBackgroundImage(ImageView imageViewToBeApplied) {
+		File imageFile = new File(mContext
+				.getDir(mContext.getResources().getString(R.string.background_image_file_dir_name), ContextWrapper.MODE_PRIVATE),
+				mContext.getResources().getString(R.string.background_image_file_name));
+		Glide.with(mContext).load(imageFile).signature(new BackgroundImageFileChangedDateSignature(imageFile.lastModified()))
+				.into(imageViewToBeApplied);
 	}
 
 	private static class Singleton {
-		private static final LockScreenDataProvider instance = new LockScreenDataProvider();
+		private static final LockScreenDataManager instance = new LockScreenDataManager();
 	}
 }

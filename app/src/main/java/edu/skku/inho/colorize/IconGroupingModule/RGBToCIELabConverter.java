@@ -3,12 +3,20 @@ package edu.skku.inho.colorize.IconGroupingModule;
 import android.graphics.Color;
 
 /**
- * Created by XEiN on 2/11/16.
+ * Created by In-Ho Han on 2/11/16.
+ *
+ * Class that converts RGB value into CIE-L*a*b* value and vice-versa.
  */
 public class RGBToCIELabConverter {
 	private static final String TAG = "RGBToCIELabConverter";
 
-	public static double[] convertRGBToLab(int argbColor) {
+	/**
+	 * converts RGB value into CIE-L*a*b* value
+	 *
+	 * @param argbColor ARGB/RGB value to convert
+	 * @return CIE-L*a*b* value
+	 */
+	public static double[] convertRGBToCIELab(int argbColor) {
 		double r = (double) Color.red(argbColor) / 255D;          //R from 0 to 255
 		double g = (double) Color.green(argbColor) / 255D;        //G from 0 to 255
 		double b = (double) Color.blue(argbColor) / 255D;         //B from 0 to 255
@@ -76,7 +84,15 @@ public class RGBToCIELabConverter {
 		return CIELab;
 	}
 
-	public static int convertLabToRGB(double CIEL, double CIEa, double CIEb) {
+	/**
+	 * converts CIEL*a*b* value to RGB value
+	 *
+	 * @param CIEL L* value
+	 * @param CIEa a* value
+	 * @param CIEb b* value
+	 * @return RGB value
+	 */
+	public static int convertCIELabToRGB(double CIEL, double CIEa, double CIEb) {
 		double y = (CIEL + 16D) / 116D;
 		double x = CIEa / 500D + y;
 		double z = y - CIEb / 200D;

@@ -16,17 +16,12 @@ import android.widget.TextView;
 
 import edu.skku.inho.colorize.Constants;
 import edu.skku.inho.colorize.Keys;
-import edu.skku.inho.colorize.LockScreenDataProvider;
+import edu.skku.inho.colorize.LockScreenDataManager;
 import edu.skku.inho.colorize.R;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnApplicationListFragmentInteraction} interface
- * to handle interaction events.
- * Use the {@link ApplicationListFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Created by In-Ho Han on 1/27/16.
  */
 public class ApplicationListFragment extends Fragment {
 	private static final String TAG = "ApplicationListFragment";
@@ -150,14 +145,14 @@ public class ApplicationListFragment extends Fragment {
 		if (mApplicationSelectionMode == Constants.LAUNCH_APPLICATION_MODE) {
 			guideText = getString(R.string.select_application_to_launch) +
 					"\n(" +
-					LockScreenDataProvider.getInstance(getActivity()).getClusterPoint(mSelectedColor).getApplicationList().size() +
+					LockScreenDataManager.getInstance(getActivity()).getClusterPoint(mSelectedColor).getApplicationList().size() +
 					getString(R.string.number_of_applications_found) +
 					")";
 			// case: setting page
 		} else {
 			guideText = getString(R.string.select_application_to_use_as_shortcut) +
 					"\n(" +
-					LockScreenDataProvider.getInstance(getActivity()).getApplicationList().size() +
+					LockScreenDataManager.getInstance(getActivity()).getApplicationList().size() +
 					getString(R.string.number_of_applications_found) +
 					")";
 		}
@@ -171,10 +166,10 @@ public class ApplicationListFragment extends Fragment {
 
 		ApplicationListAdapter adapter;
 		if (mApplicationSelectionMode == Constants.LAUNCH_APPLICATION_MODE) {
-			adapter = new ApplicationListAdapter(LockScreenDataProvider.getInstance(getActivity()).getClusterPoint(mSelectedColor)
+			adapter = new ApplicationListAdapter(LockScreenDataManager.getInstance(getActivity()).getClusterPoint(mSelectedColor)
 					.getApplicationList(), getActivity(), mApplicationSelectionMode);
 		} else {
-			adapter = new ApplicationListAdapter(LockScreenDataProvider.getInstance(getActivity()).getApplicationList(),
+			adapter = new ApplicationListAdapter(LockScreenDataManager.getInstance(getActivity()).getApplicationList(),
 					getActivity(),
 					mApplicationSelectionMode,
 					mClickedViewResId,

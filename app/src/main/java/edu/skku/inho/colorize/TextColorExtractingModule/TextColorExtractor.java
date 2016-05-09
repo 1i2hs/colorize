@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by XEiN on 5/4/16.
+ * Created by In-Ho Han on 5/4/16.
  */
 public class TextColorExtractor {
 	private static final String TAG = "TextColorExtractor";

@@ -20,9 +20,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import edu.skku.inho.colorize.ApplicationInfoBundle;
-import edu.skku.inho.colorize.LockScreenDataProvider;
+import edu.skku.inho.colorize.LockScreenDataManager;
 import edu.skku.inho.colorize.R;
 
+/**
+ * Created by In-Ho Han on 2/11/16.
+ */
 public class SplashActivity extends AppCompatActivity {
 	private static final String TAG = "SplashActivity";
 
@@ -73,7 +76,7 @@ public class SplashActivity extends AppCompatActivity {
 		}
 
 
-		LockScreenDataProvider.getInstance(this).setApplicationList(sortApplicationInAlphabeticalOrder(applicationList));
+		LockScreenDataManager.getInstance(this).setApplicationList(sortApplicationInAlphabeticalOrder(applicationList));
 		Log.d(TAG, ">>> end reading app info from device...");
 	}
 

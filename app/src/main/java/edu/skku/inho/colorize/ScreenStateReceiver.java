@@ -10,7 +10,7 @@ import android.telephony.TelephonyManager;
 import edu.skku.inho.colorize.LockScreenPage.LockScreenActivity;
 
 /**
- * Created by XEiN on 2/20/16.
+ * Created by In-Ho Han on 2/20/16.
  */
 public class ScreenStateReceiver extends BroadcastReceiver {
 	//private KeyguardManager mKeyguardManager = null;
@@ -37,7 +37,7 @@ public class ScreenStateReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if (LockScreenDataProvider.getInstance(context).isColorDataReady()) {
+		if (LockScreenDataManager.getInstance(context).isColorDataReady()) {
 			/*if (mKeyguardManager == null)
 				mKeyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
 

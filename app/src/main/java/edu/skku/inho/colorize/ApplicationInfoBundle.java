@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable;
 
 
 /**
- * Created by XEiN on 1/28/16.
+ * Created by In-Ho Han on 1/28/16.
  */
 public class ApplicationInfoBundle {
 	private Drawable mApplicationIcon;

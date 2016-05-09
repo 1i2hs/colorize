@@ -19,12 +19,12 @@ import java.util.ArrayList;
 
 import edu.skku.inho.colorize.CroppingBackgroundPage.BackgroundImageFileChangedDateSignature;
 import edu.skku.inho.colorize.CustomView.DigitalClockView;
-import edu.skku.inho.colorize.LockScreenDataProvider;
+import edu.skku.inho.colorize.LockScreenDataManager;
 import edu.skku.inho.colorize.R;
 import edu.skku.inho.colorize.TextColorExtractingModule.TextColorExtractor;
 
 /**
- * Created by XEiN on 5/4/16.
+ * Created by In-Ho Han on 5/4/16.
  */
 public class TextColorSettingActivity extends AppCompatActivity {
 	private final static String TAG = "TextColorSettingActivity";
@@ -78,7 +78,7 @@ public class TextColorSettingActivity extends AppCompatActivity {
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				LockScreenDataProvider.getInstance(TextColorSettingActivity.this).setDigitalClockTextColor(mSelectedColor);
+				LockScreenDataManager.getInstance(TextColorSettingActivity.this).setDigitalClockTextColor(mSelectedColor);
 				finish();
 			}
 		});
@@ -89,7 +89,7 @@ public class TextColorSettingActivity extends AppCompatActivity {
 	}
 
 	private void configureDigitalClock() {
-		int color = LockScreenDataProvider.getInstance(this).getDigitalClockTextColor();
+		int color = LockScreenDataManager.getInstance(this).getDigitalClockTextColor();
 		mDigitalClockTimeView.setTextColor(color);
 		mDigitalClockDateView.setTextColor(color);
 	}
@@ -137,7 +137,7 @@ public class TextColorSettingActivity extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
-		LockScreenDataProvider.getInstance(this).setDigitalClockTextColor(mSelectedColor);
+		LockScreenDataManager.getInstance(this).setDigitalClockTextColor(mSelectedColor);
 		super.onBackPressed();
 	}
 

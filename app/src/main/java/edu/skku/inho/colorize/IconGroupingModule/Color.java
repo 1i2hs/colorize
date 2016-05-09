@@ -5,23 +5,36 @@ import java.util.Random;
 import edu.skku.inho.colorize.ApplicationInfoBundle;
 
 /**
- * Created by XEiN on 2/12/16.
+ * Created by In-Ho Han on 2/12/16.
+ *
+ * class that represents one point in CIE-L*a*b* color space.
+ * it may also contain info of an application it represents if the color is not a standard color.
  */
 public class Color {
-	private double mL = 0;
-	private double mA = 0;
-	private double mB = 0;
-	private int mGroupNumber = 0;
+	private double mL = 0;          // L* value for the color
+	private double mA = 0;          // a* value for the color
+	private double mB = 0;          // b* value for the color
 
-	private ApplicationInfoBundle mApplicationInfoBundle;
+	private ApplicationInfoBundle mApplicationInfoBundle;   // holds info of an application that the color represents
 
+	/**
+	 * Constructor
+	 *
+	 * @param l L* value for the color
+	 * @param a a* value for the color
+	 * @param b b* value for the color
+	 */
 	public Color(double l, double a, double b) {
 		mL = l;
 		mA = a;
 		mB = b;
 	}
 
-	//Calculates the distance between two mColors.
+	/**
+	 * calculates the euclidean distance(in CIE-L*a*b* color space) between two colors.
+	 * @param p         color(coordinate)
+	 * @param centroid  centroid which is also a color
+	 */
 	protected static double distance(Color p, Color centroid) {
 		return Math.sqrt(Math.pow((centroid.getL() - p.getL()), 2) + Math.pow((centroid.getA() - p.getA()), 2) + Math.pow((centroid.getB() - p.getB()), 2));
 	}
@@ -50,17 +63,19 @@ public class Color {
 		mB = b;
 	}
 
-	//Creates random point
+	/**
+	 * deprecated.
+	 * creates random point.
+	 * this method was used for random centroid generation.
+	 * @param min
+	 * @param max
+	 **/
 	protected static Color createRandomPoint(int min, int max) {
 		Random r = new Random();
 		double l = min + (max - min) * r.nextDouble();
 		double a = min + (max - min) * r.nextDouble();
 		double b = min + (max - min) * r.nextDouble();
 		return new Color(l, a, b);
-	}
-
-	public void setGroup(int groupNumber) {
-		mGroupNumber = groupNumber;
 	}
 
 	public ApplicationInfoBundle getApplicationInfoBundle() {

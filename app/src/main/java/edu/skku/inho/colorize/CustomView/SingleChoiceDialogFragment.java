@@ -10,7 +10,7 @@ import android.support.v7.app.AlertDialog;
 import edu.skku.inho.colorize.R;
 
 /**
- * Created by XEiN on 2/20/16.
+ * Created by In-Ho Han on 2/20/16.
  */
 public class SingleChoiceDialogFragment extends DialogFragment {
 	private static final String TITLE = "title";

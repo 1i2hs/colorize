@@ -24,6 +24,7 @@
     <!--CroppingImageActivity-->
     <string name="lock_screen_background_selection">잠금화면 배경 설정</string>
     <string name="crop_image_to_use_as_background">배경 이미지 크롭</string>
+    <string name="get_image_from_gallery">이미지 불러오기</string>
     <string name="lock_screen_background_selected">잠금화면 배경이 설정되었습니다</string>
 
     <!--TextColorSettingActivity-->

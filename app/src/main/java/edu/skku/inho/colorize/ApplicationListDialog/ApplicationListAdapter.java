@@ -17,7 +17,7 @@ import edu.skku.inho.colorize.Constants;
 import edu.skku.inho.colorize.R;
 
 /**
- * Created by XEiN on 1/27/16.
+ * Created by In-Ho Han on 1/27/16.
  */
 public class ApplicationListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 	private static final String TAG = "ApplicationListAdapter";

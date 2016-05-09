@@ -15,7 +15,7 @@ import java.util.Calendar;
 import edu.skku.inho.colorize.R;
 
 /**
- * Created by XEiN on 2/20/16.
+ * Created by In-Ho Han on 2/20/16.
  */
 public class DigitalClockView extends TextView {
 	public static final int TIME = 0;

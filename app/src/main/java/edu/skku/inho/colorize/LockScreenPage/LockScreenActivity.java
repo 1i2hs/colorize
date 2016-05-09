@@ -5,7 +5,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Canvas;
@@ -28,22 +27,21 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-
-import java.io.File;
 import java.util.ArrayList;
 
 import edu.skku.inho.colorize.ApplicationInfoBundle;
 import edu.skku.inho.colorize.ApplicationListDialog.ApplicationListFragment;
 import edu.skku.inho.colorize.Constants;
-import edu.skku.inho.colorize.CroppingBackgroundPage.BackgroundImageFileChangedDateSignature;
 import edu.skku.inho.colorize.CustomView.CircleView;
 import edu.skku.inho.colorize.CustomView.DigitalClockView;
 import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 import edu.skku.inho.colorize.Keys;
-import edu.skku.inho.colorize.LockScreenDataProvider;
+import edu.skku.inho.colorize.LockScreenDataManager;
 import edu.skku.inho.colorize.R;
 
+/**
+ * Created by In-Ho Han on 2/11/16.
+ */
 public class LockScreenActivity extends AppCompatActivity implements ApplicationListFragment.OnApplicationListFragmentInteraction,
 		View.OnClickListener,
 		View.OnTouchListener,
@@ -106,7 +104,7 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 
 		configureBackground();
 		// check whether the computed color data is ready
-		if (LockScreenDataProvider.getInstance(this).isColorDataReady() && LockScreenDataProvider.getInstance(this).isLockScreenRunning()) {
+		if (LockScreenDataManager.getInstance(this).isColorDataReady() && LockScreenDataManager.getInstance(this).isLockScreenRunning()) {
 			mTargetStraightTransitionValue = getResources().getDimensionPixelSize(R.dimen.color_circle_straight_transition_value);
 			mTargetDiagonalTransitionValue = getResources().getDimensionPixelSize(R.dimen.color_circle_diagonal_transition_value);
 
@@ -137,10 +135,7 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 
 	protected void configureBackground() {
 		mBackgroundImageView = (ImageView) findViewById(R.id.imageView_background);
-
-		File imageFile = new File(getDir(getResources().getString(R.string.background_image_file_dir_name), ContextWrapper.MODE_PRIVATE),
-				getResources().getString(R.string.background_image_file_name));
-		Glide.with(this).load(imageFile).signature(new BackgroundImageFileChangedDateSignature(imageFile.lastModified())).into(mBackgroundImageView);
+		LockScreenDataManager.getInstance(this).applyBackgroundImage(mBackgroundImageView);
 	}
 
 	protected void configureBackgroundShade() {
@@ -152,27 +147,18 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 		mDigitalClockTimeView = (DigitalClockView) findViewById(R.id.digitalClockView_time);
 		mDigitalClockDateView = (DigitalClockView) findViewById(R.id.digitalClockView_date);
 
-		int textColor = LockScreenDataProvider.getInstance(this).getDigitalClockTextColor();
+		int textColor = LockScreenDataManager.getInstance(this).getDigitalClockTextColor();
 		mDigitalClockTimeView.setTextColor(textColor);
 		mDigitalClockDateView.setTextColor(textColor);
 	}
 
-	/**
-	 * get instance of circle image for selecting color from xml file and
-	 * set OnDragListener to detect which color is dragged into the circle image
-	 */
 	protected void configureSelectionCircle() {
 		mSelectionView = findViewById(R.id.view_selection_circle);
 		mSelectionView.setOnTouchListener(this);
 	}
 
-	/**
-	 * get instances of color circle images(which categorizes applications into certain colors)
-	 * from xml file, sets the color for each circle, and OnTouchListener to detect one of the
-	 * color circle images is touched.
-	 */
 	protected void configureColorCircles() {
-		ArrayList<GroupColor> groupColorPointList = LockScreenDataProvider.getInstance(this).getGroupColorList();
+		ArrayList<GroupColor> groupColorPointList = LockScreenDataManager.getInstance(this).getGroupColorList();
 		for (int i = 0; i < 7; i++) {
 			CircleView colorCircleView;
 
@@ -210,9 +196,8 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 					colorCircleView = null;
 					break;
 			}
-			colorCircleView.setColor(groupColorPointList.get(i).getARGBColor());
+			colorCircleView.setColor(groupColorPointList.get(i).getARGB());
 			colorCircleView.setOnDragListener(this);
-			//colorCircleView.setOnTouchListener(new OnSelectionCircleTouchListener());
 		}
 	}
 
@@ -223,12 +208,12 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 	}
 
 	protected void configureApplicationShortcuts() {
-		if (LockScreenDataProvider.getInstance(this).isUseApplicationShortcuts()) {
+		if (LockScreenDataManager.getInstance(this).isUseApplicationShortcuts()) {
 			int[] viewResId = {R.id.imageView_first_shortcut_app, R.id.imageView_second_shortcut_app, R.id.imageView_third_shortcut_app, R.id.imageView_fourth_shortcut_app};
 
 			for (int i = 0; i < Constants.NUMBER_OF_APPLICATION_SHORTCUTS; i++) {
 				// case : if there is an application shortcut set for i-th position
-				if ((mApplicationShortcut[i] = LockScreenDataProvider.getInstance(this).getApplicationShortcut(i)) != null) {
+				if ((mApplicationShortcut[i] = LockScreenDataManager.getInstance(this).getApplicationShortcut(i)) != null) {
 					View shortcutApplicationView = findViewById(viewResId[i]);
 					shortcutApplicationView.setVisibility(View.VISIBLE);
 					shortcutApplicationView.setBackground(mApplicationShortcut[i].getApplicationIcon());
@@ -254,9 +239,6 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 	protected void onPause() {
 		super.onPause();
 		getSupportFragmentManager().popBackStack();
-		// code for blocking recent apps button click
-		//ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-		//activityManager.moveTaskToFront(getTaskId(), 0);
 	}
 
 	@Override

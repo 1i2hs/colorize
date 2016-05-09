@@ -25,12 +25,15 @@ import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 import edu.skku.inho.colorize.IconGroupingModule.IconColorGrouper;
 import edu.skku.inho.colorize.SettingPage.SplashActivity;
 
+/**
+ * Created by In-Ho Han on 2/11/16.
+ */
 public class ColorGroupingService extends Service {
 	private static final String TAG = "ColorGroupingService";
 
 	private final IBinder mBinder = new ColorGroupingLocalBinder();
 
-	private BroadcastReceiver mScreenStateReceiver;
+	private ScreenStateReceiver mScreenStateReceiver;
 
 	private BroadcastReceiver mPackageInstallationStateReceiver;
 
@@ -41,26 +44,26 @@ public class ColorGroupingService extends Service {
 	private Runnable mIconColorGroupingRunnable = new Runnable() {
 		@Override
 		public void run() {
-			LockScreenDataProvider lockScreenDataProvider = LockScreenDataProvider.getInstance(ColorGroupingService.this);
+			LockScreenDataManager lockScreenDataManager = LockScreenDataManager.getInstance(ColorGroupingService.this);
 
-			lockScreenDataProvider.setIsColorDataReady(false);
+			lockScreenDataManager.setIsColorDataReady(false);
 
 			IconColorGrouper iconColorGrouper;
-			if (lockScreenDataProvider.getGroupingMode() == Constants.GROUPING_WITH_FIXED_COLOR_MODE) {
+			if (lockScreenDataManager.getGroupingMode() == Constants.GROUPING_WITH_FIXED_COLOR_MODE) {
 				Log.i(TAG, "[Grouping Mode] fixed color");
-				iconColorGrouper = IconColorGrouper.groupFrom(readAppInfoFromDevice(), ColorGroupingService.this).generateWithFixedColor();
+				iconColorGrouper = IconColorGrouper.groupFrom(readAppInfoFromDevice(), ColorGroupingService.this).generateWithFixedGroupColor();
 			} else {
 				Log.i(TAG, "[Grouping Mode] variable color");
-				iconColorGrouper = IconColorGrouper.groupFrom(readAppInfoFromDevice(), ColorGroupingService.this).generateWithVariableColor();
+				iconColorGrouper = IconColorGrouper.groupFrom(readAppInfoFromDevice(), ColorGroupingService.this).generateWithCalculatedGroupColor();
 			}
 
-			lockScreenDataProvider.setGroupColorList((ArrayList<GroupColor>) iconColorGrouper.getGroupColorList());
-			lockScreenDataProvider.setApplicationList((ArrayList<ApplicationInfoBundle>) iconColorGrouper.getApplicationList());
+			lockScreenDataManager.setGroupColorList((ArrayList<GroupColor>) iconColorGrouper.getGroupColorList());
+			lockScreenDataManager.setApplicationList((ArrayList<ApplicationInfoBundle>) iconColorGrouper.getApplicationList());
 
 			// notify SettingActivity that color computing is finished
 			sendColorDataReadyStateMessage();
 
-			lockScreenDataProvider.setIsColorDataReady(true);
+			lockScreenDataManager.setIsColorDataReady(true);
 		}
 	};
 
@@ -83,7 +86,6 @@ public class ColorGroupingService extends Service {
 					configurePackageInstallationStateReceiver();
 				}
 				if (mServiceTerminationReceiver == null) {
-					Log.d(TAG, "asdfasdfasdfasdfasdfasdf");
 					configureServiceTerminationReceiver();
 				}
 			}
@@ -96,7 +98,7 @@ public class ColorGroupingService extends Service {
 		startForeground(1, getNotification());
 		addHandlerToHandlerThread(updateHandlerThread);
 
-		LockScreenDataProvider.getInstance(this).setIsLockScreenRunning(true);
+		LockScreenDataManager.getInstance(this).setIsLockScreenRunning(true);
 
 		return START_REDELIVER_INTENT;
 	}
@@ -105,7 +107,7 @@ public class ColorGroupingService extends Service {
 	public void onDestroy() {
 		Log.d(TAG, "Service on destroy...");
 		// remove appropriate runnable of each mode from handler
-		if (LockScreenDataProvider.getInstance(this).getGroupingMode() == Constants.GROUPING_WITH_FIXED_COLOR_MODE) {
+		if (LockScreenDataManager.getInstance(this).getGroupingMode() == Constants.GROUPING_WITH_FIXED_COLOR_MODE) {
 			Log.d(TAG, "fixed_color_mode_terminated");
 		} else {
 			Log.d(TAG, "variable_color_mode_terminated");
@@ -114,9 +116,6 @@ public class ColorGroupingService extends Service {
 		mUpdateHandler.removeCallbacks(mIconColorGroupingRunnable);
 
 		sendFinishMessage();
-
-		// save stopped lock screen running state into shared preferences
-		LockScreenDataProvider.getInstance(this).setIsLockScreenRunning(false);
 
 		unregisterReceiver(mScreenStateReceiver);
 		unregisterReceiver(mPackageInstallationStateReceiver);
@@ -170,6 +169,7 @@ public class ColorGroupingService extends Service {
 		mServiceTerminationReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
+				LockScreenDataManager.getInstance(context).setIsLockScreenRunning(false);
 				stopSelf();
 			}
 		};

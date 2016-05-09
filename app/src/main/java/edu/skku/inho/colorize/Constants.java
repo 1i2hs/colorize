@@ -1,7 +1,7 @@
 package edu.skku.inho.colorize;
 
 /**
- * Created by XEiN on 2/18/16.
+ * Created by In-Ho Han on 2/18/16.
  *
  * This class contains constants
  */
@@ -23,7 +23,7 @@ public class Constants {
 	/**
 	 * constants for number of group colors
 	 */
-	public static final int DEFAULT_NUMBER_OF_GROUP_COLOR = 8;
+	public static final int DEFAULT_NUMBER_OF_GROUP_COLOR = 7;
 
 	public static final int COLOR_DATA_READY = 1;
 
@@ -39,4 +39,8 @@ public class Constants {
 
 
 	public static final String UNLOCK = "unlock";
+
+	public static final int LOCK_SCREEN_RUNNING_STATE_NOT_DEFINED = -1;
+	public static final int LOCK_SCREEN_NOT_RUNNING = 0;
+	public static final int LOCK_SCREEN_RUNNING = 1;
 }

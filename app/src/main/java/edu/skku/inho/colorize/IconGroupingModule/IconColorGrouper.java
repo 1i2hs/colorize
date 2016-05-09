@@ -18,17 +18,38 @@ import edu.skku.inho.colorize.ApplicationInfoBundle;
 import edu.skku.inho.colorize.R;
 
 /**
- * Created by XEiN on 3/1/16.
+ * Created by In-Ho Han on 3/1/16.
+ *
+ * Class that groups icons of all applications installed inside the device into 7 groups
+ * and each group represents standard color.
+ * Each application is allocated to one of 7 standard color groups based on its main color of its icon.
+ * 7 standard colors are calculated with K-means algorithm.
+ *
+ * This class is designed with builder pattern. Therefore it can be instantiated with IconColorGrouper.Builder class.
  */
 public class IconColorGrouper {
-	private List<GroupColor> mGroupColorList;
-	private List<ApplicationInfoBundle> mApplicationList;
+	private List<GroupColor> mGroupColorList;               // list of standard colors
+	private List<ApplicationInfoBundle> mApplicationList;   // list of applications
 
+	/**
+	 * Constructor.
+	 * This constructor cannot be called outside of this class. It is used only for IconColorGrouper.Builder class.
+	 *
+	 * @param applicationList
+	 * @param groupColorList
+	 */
 	private IconColorGrouper(List<ApplicationInfoBundle> applicationList, List<GroupColor> groupColorList) {
 		mApplicationList = applicationList;
 		mGroupColorList = groupColorList;
 	}
 
+	/**
+	 * Static method that returns Builder instance.
+	 * This is a starting method to instantiated IconColorGrouper class.
+	 * @param applicationInfoList list of application to be calculated to form 7 groups(standard colors)
+	 * @param context context which this class is in.
+	 * @return Builder instance
+	 */
 	public static Builder groupFrom(List<ResolveInfo> applicationInfoList, Context context) {
 		return new Builder(applicationInfoList, context);
 	}
@@ -41,29 +62,52 @@ public class IconColorGrouper {
 		return mApplicationList;
 	}
 
+	/**
+	 * Inner class that builds IconColorGrouper class
+	 */
 	public static class Builder {
 		private static final String TAG = "IconColorGrouper.Builder";
 
 		private Context mContext;
-		private List<ResolveInfo> mApplicationInfoList;
+		private List<ResolveInfo> mApplicationInfoList;         // list of applications(each item has full info of application)
+		private List<ApplicationInfoBundle> mApplicationList;   // list of applications(light weighted list which means there are only info needed inside each item)
 
-		private List<ApplicationInfoBundle> mApplicationList;
-
+		// fixed 7 standard color for fixed color grouping mode
 		private int[] mFixedGroupColorIds = {R.color.fixed_color_one, R.color.fixed_color_two, R.color.fixed_color_three, R.color.fixed_color_four, R.color.fixed_color_five, R.color.fixed_color_six, R.color.fixed_color_seven};
 
 		private boolean mIsGroupingWithFixedColorModeInitialized = true;
 
+		/**
+		 * Constructor
+		 * @param applicationInfoList list of application(each item has full info of application)
+		 * @param context context which this class is in.
+		 */
 		public Builder(List<ResolveInfo> applicationInfoList, Context context) {
 			mApplicationInfoList = applicationInfoList;
 			mContext = context;
 		}
 
-		public IconColorGrouper generateWithFixedColor() {
-			List<GroupColor> groupColorList = matchExtractedColorsToGroupColors(loadFixedGroupColors(), makeExtractedColorPointList());
+		/**
+		 * groups all application with 7 fixed standard colors and generates instance of IconColorGrouper class.
+		 * Fixed standard color is the color that is assigned by the developer.
+		 *
+		 * @return IconColorGrouper instance
+		 */
+		public IconColorGrouper generateWithFixedGroupColor() {
+			List<GroupColor> groupColorList = allocateExtractedColorsToGroupColors(loadFixedGroupColors(), makeExtractedMainColorList());
 			return new IconColorGrouper(mApplicationList, groupColorList);
 		}
 
-		private ArrayList<GroupColor> matchExtractedColorsToGroupColors(ArrayList<GroupColor> groupColorList, ArrayList<Color> extractedColorList) {
+		/**
+		 * allocates main color extracted from an application's icon to one of 7 standard colors.
+		 * It is grouping process. Allocating a color to a standard color also means application being
+		 * grouped.
+		 *
+		 * @param groupColorList     7 standard colors
+		 * @param extractedColorList list of main colors extracted from icons
+		 * @return list of 7 standard colors
+		 */
+		private ArrayList<GroupColor> allocateExtractedColorsToGroupColors(ArrayList<GroupColor> groupColorList, ArrayList<Color> extractedColorList) {
 			for (Color extractedColor : extractedColorList) {
 				double minimumEuclideanDistance = Double.MAX_VALUE;
 				int minimumEuclideanDistanceIndex = -1;
@@ -96,15 +140,19 @@ public class IconColorGrouper {
 			return groupColorList;
 		}
 
+		/**
+		 * makes an ArrayList instance that contains 7 fixed standard colors.
+		 * @return list of 7 fixed standard colors
+		 */
 		private ArrayList<GroupColor> loadFixedGroupColors() {
 			if (mIsGroupingWithFixedColorModeInitialized) {
 				ArrayList<GroupColor> groupColorList = new ArrayList<>();
 				for (int i = 0; i < mFixedGroupColorIds.length; i++) {
 					double[] CIELab;
 					if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-						CIELab = RGBToCIELabConverter.convertRGBToLab(mContext.getResources().getColor(mFixedGroupColorIds[i]));
+						CIELab = RGBToCIELabConverter.convertRGBToCIELab(mContext.getResources().getColor(mFixedGroupColorIds[i]));
 					} else {
-						CIELab = RGBToCIELabConverter.convertRGBToLab(mContext.getColor(mFixedGroupColorIds[i]));
+						CIELab = RGBToCIELabConverter.convertRGBToCIELab(mContext.getColor(mFixedGroupColorIds[i]));
 
 					}
 					groupColorList.add(new GroupColor(CIELab[0], CIELab[1], CIELab[2]));
@@ -116,7 +164,11 @@ public class IconColorGrouper {
 			}
 		}
 
-		private ArrayList<Color> makeExtractedColorPointList() {
+		/**
+		 * makes an ArrayList instance that contains main colors that are extracted from applications' icons.
+		 * @return list of extracted main color
+		 */
+		private ArrayList<Color> makeExtractedMainColorList() {
 			mApplicationList = new ArrayList<>();
 			ArrayList<Color> extractedColorList = new ArrayList<>();
 			int drawableSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, mContext.getResources().getDisplayMetrics());
@@ -130,7 +182,7 @@ public class IconColorGrouper {
 				applicationInfoBundle.setApplicationPackageName(temp.packageName);
 				applicationInfoBundle.setApplicationName(temp.loadLabel(mContext.getPackageManager()).toString());
 				//applicationInfoBundle.setIntentForPackage(getPackageManager().getLaunchIntentForPackage(temp.packageName));
-				extractSevenColors(Palette.from(DrawableToBitmapConverter.convertToBitmap(tempDrawable, drawableSize, drawableSize)).generate(),
+				extractMainColor(Palette.from(DrawableToBitmapConverter.convertToBitmap(tempDrawable, drawableSize, drawableSize)).generate(),
 						applicationInfoBundle,
 						extractedColorList);
 
@@ -142,9 +194,8 @@ public class IconColorGrouper {
 		}
 
 		/**
-		 * must be merged with equal method in splash activity
-		 *
-		 * @param applicationList
+		 * sorts list of applications in alphabetical order
+		 * @param applicationList list of applications installed inside a device
 		 * @return
 		 */
 		private ArrayList<ApplicationInfoBundle> sortApplicationInAlphabeticalOrder(ArrayList<ApplicationInfoBundle> applicationList) {
@@ -157,7 +208,15 @@ public class IconColorGrouper {
 			return applicationList;
 		}
 
-		private void extractSevenColors(Palette palette, ApplicationInfoBundle applicationInfoBundle, ArrayList<Color> extractedColorList) {
+		/**
+		 * extracts a main color from an icon of an application.
+		 * The main color is highly populated color inside a bitmap image of the icon.
+		 *
+		 * @param palette                Palette instance that is used to extract highly populated color
+		 * @param applicationInfoBundle  instance that has application info(Application icon image data, name of application, package name of application)
+		 * @param extractedMainColorList ArrayList that has list of extracted main colors
+		 */
+		private void extractMainColor(Palette palette, ApplicationInfoBundle applicationInfoBundle, ArrayList<Color> extractedMainColorList) {
 			/*Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
 			Palette.Swatch lightVibrantSwatch = palette.getLightVibrantSwatch();
 			Palette.Swatch darkVibrantSwatch = palette.getDarkVibrantSwatch();
@@ -170,32 +229,32 @@ public class IconColorGrouper {
 
 			if (vibrantSwatch != null) {
 				//Log.i(TAG, "Extracting vibrant color...");
-				extractedColorList.add(makeExtractedColorPoint(vibrantSwatch, applicationInfoBundle));
+				extractedMainColorList.add(makeExtractedColorPoint(vibrantSwatch, applicationInfoBundle));
 			}
 
 			if (lightVibrantSwatch != null) {
 				//Log.i(TAG, "Extracting light vibrant color...");
-				extractedColorList.add(makeExtractedColorPoint(lightVibrantSwatch, applicationInfoBundle));
+				extractedMainColorList.add(makeExtractedColorPoint(lightVibrantSwatch, applicationInfoBundle));
 			}
 
 			if (darkVibrantSwatch != null) {
 				//Log.i(TAG, "Extracting dark vibrant color..");
-				extractedColorList.add(makeExtractedColorPoint(darkVibrantSwatch, applicationInfoBundle));
+				extractedMainColorList.add(makeExtractedColorPoint(darkVibrantSwatch, applicationInfoBundle));
 			}
 
 			if (mutedSwatch != null) {
 				//Log.i(TAG, "Extracting muted color...");
-				extractedColorList.add(makeExtractedColorPoint(mutedSwatch, applicationInfoBundle));
+				extractedMainColorList.add(makeExtractedColorPoint(mutedSwatch, applicationInfoBundle));
 			}
 
 			if (lightMutedSwatch != null) {
 				//Log.i(TAG, "Extracting light muted color...");
-				extractedColorList.add(makeExtractedColorPoint(lightMutedSwatch, applicationInfoBundle));
+				extractedMainColorList.add(makeExtractedColorPoint(lightMutedSwatch, applicationInfoBundle));
 			}
 
 			if (darkMutedSwatch != null) {
 				//Log.i(TAG, "Extracting dark muted color...");
-				extractedColorList.add(makeExtractedColorPoint(darkMutedSwatch, applicationInfoBundle));
+				extractedMainColorList.add(makeExtractedColorPoint(darkMutedSwatch, applicationInfoBundle));
 			}
 */
 			//Log.i(TAG, "Extracting highly populated color...");
@@ -203,44 +262,57 @@ public class IconColorGrouper {
 				//Log.d(TAG, applicationInfoBundle.getApplicationName());
 				Color color = HighlyPopulatedColorExtractor.extractHighlyPopulatedColor(palette.getSwatches());
 				color.setApplicationInfoBundle(applicationInfoBundle);
-				extractedColorList.add(color);
+				extractedMainColorList.add(color);
 			} else {
 				//Log.d(TAG, "Failed to extract color : " + applicationInfoBundle.getApplicationName());
 			}
 			//Log.i(TAG, ">> Extraction completed");
 		}
 
-		private Color makeExtractedColorPoint(Palette.Swatch swatch, ApplicationInfoBundle applicationInfoBundle) {
-			double[] cieLabColor = RGBToCIELabConverter.convertRGBToLab(swatch.getRgb());
-			Color color = new Color(cieLabColor[0], cieLabColor[1], cieLabColor[2]);
-			color.setApplicationInfoBundle(applicationInfoBundle);
-			return color;
-		}
-
-		public IconColorGrouper generateWithVariableColor() {
+		/**
+		 * groups all application with 7 calculated standard colors and generates instance of IconColorGrouper class.
+		 * @return IconColorGrouper instance
+		 */
+		public IconColorGrouper generateWithCalculatedGroupColor() {
 			List<GroupColor> groupColorList = makeGroupColorList();
 			return new IconColorGrouper(mApplicationList, groupColorList);
 		}
 
+		/**
+		 * makes an ArrayList instance of list of 7 standard colors
+		 * @return list of 7 standard colors
+		 */
 		private ArrayList<GroupColor> makeGroupColorList() {
 			ArrayList<GroupColor> groupColorList = new ArrayList<>();
-			for (KMeans.Group group : groupExtractedColorPointsIntoEightColorPoints(makeExtractedColorPointList())) {
-				groupColorList.add(mapGroupToGroupColor(group));
+			for (KMeans.Group group : groupExtractedMainColorIntoSevenGroups(makeExtractedMainColorList())) {
+				groupColorList.add(makeGroupColorWithCentroid(group));
 			}
 			return groupColorList;
 		}
 
-		private List<KMeans.Group> groupExtractedColorPointsIntoEightColorPoints(ArrayList<Color> extractedColorList) {
+		/**
+		 * groups main colors extracted from applications' icons into 7 groups using K-means algorithm.
+		 * This is grouping process. 7 standard colors' objects(GroupColor class) are not instantiated at this process.
+		 * @param extractedMainColorList list of main colors extracted from applications' icons
+		 * @return 7 groups made by K-means algorithm.
+		 */
+		private List<KMeans.Group> groupExtractedMainColorIntoSevenGroups(ArrayList<Color> extractedMainColorList) {
 			Log.i(TAG, ">>> Starting color grouping...");
-			//KMeans kMeans = new KMeans(LockScreenDataProvider.getInstance().getExtractedColorPointList());
-			KMeans kMeans = new KMeans(extractedColorList);
+			//KMeans kMeans = new KMeans(LockScreenDataManager.getInstance().getExtractedColorPointList());
+			KMeans kMeans = new KMeans(extractedMainColorList);
 			kMeans.init(mContext);
 			kMeans.calculate();
 			Log.i(TAG, ">>> Grouping colors completed");
 			return kMeans.getGroups();
 		}
 
-		private GroupColor mapGroupToGroupColor(KMeans.Group group) {
+		/**
+		 * makes an instance of standard color with centroid of the group made with main colors.
+		 * The coordinate of centroid is based on CIE-L*a*b* color space.
+		 * @param group the group made by K-means algorithm
+		 * @return GroupColor instance that is instantiated by centroid of the group
+		 */
+		private GroupColor makeGroupColorWithCentroid(KMeans.Group group) {
 			Color centroid = group.getCentroid();
 			GroupColor groupColor = new GroupColor(centroid.getL(), centroid.getA(), centroid.getB());
 
@@ -249,8 +321,7 @@ public class IconColorGrouper {
 				isDuplicate = false;
 				ApplicationInfoBundle temp = color.getApplicationInfoBundle();
 				ArrayList<ApplicationInfoBundle> tempList = groupColor.getApplicationList();
-				int tempListSize = tempList.size();
-				for (int i = 0; i < tempListSize; i++) {
+				for (int i = 0; i < tempList.size(); i++) {
 					if (temp.getApplicationName().equals(tempList.get(i).getApplicationName())) {
 						isDuplicate = true;
 						break;

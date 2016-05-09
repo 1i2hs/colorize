@@ -42,10 +42,13 @@ import edu.skku.inho.colorize.CustomView.ProgressDialogFragment;
 import edu.skku.inho.colorize.CustomView.SingleChoiceDialogFragment;
 import edu.skku.inho.colorize.IconGroupingModule.DrawableToBitmapConverter;
 import edu.skku.inho.colorize.Keys;
-import edu.skku.inho.colorize.LockScreenDataProvider;
+import edu.skku.inho.colorize.LockScreenDataManager;
 import edu.skku.inho.colorize.R;
 import edu.skku.inho.colorize.TextColorSettingPage.TextColorSettingActivity;
 
+/**
+ * Created by In-Ho Han on 2/11/16.
+ */
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener,
 		InitializingSettingFragment.InitializingSettingFragmentInteraction, SingleChoiceDialogFragment.SingleChoiceDialogFragmentInteraction,
 		ApplicationListFragment.OnApplicationListFragmentInteraction {
@@ -89,6 +92,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 			}
 		}
 	};
+
 	private ServiceConnection mServiceConnection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -110,7 +114,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setting);
 
-		mIsLockScreenRunning = LockScreenDataProvider.getInstance(this).isLockScreenRunning();
+		mIsLockScreenRunning = LockScreenDataManager.getInstance(this).isLockScreenRunning();
 
 		LocalBroadcastManager.getInstance(this).registerReceiver(mServiceStateReceiver, new IntentFilter(Keys.COLOR_GROUPING_SERVICE_BROADCAST));
 
@@ -201,7 +205,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 	}
 
 	private void configureGroupingModeSetting() {
-		mSelectedGroupingMode = LockScreenDataProvider.getInstance(this).getGroupingMode();
+		mSelectedGroupingMode = LockScreenDataManager.getInstance(this).getGroupingMode();
 		setGroupingModeText();
 		mGroupingModeSelectionLinearLayout.setOnClickListener(this);
 	}
@@ -215,12 +219,12 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 	}
 
 	private void configureApplicationShortCutsUsageSetting() {
-		LockScreenDataProvider lockScreenDataProvider = LockScreenDataProvider.getInstance(this);
-		mUseApplicationShortcuts = lockScreenDataProvider.isUseApplicationShortcuts();
+		LockScreenDataManager lockScreenDataManager = LockScreenDataManager.getInstance(this);
+		mUseApplicationShortcuts = lockScreenDataManager.isUseApplicationShortcuts();
 		mApplicationShortcutsUsageSwitch.setChecked(mUseApplicationShortcuts);
 
 		for (int i = 0; i < Constants.NUMBER_OF_APPLICATION_SHORTCUTS; i++) {
-			if ((mApplicationShortcuts[i] = lockScreenDataProvider.getApplicationShortcut(i)) != null) {
+			if ((mApplicationShortcuts[i] = lockScreenDataManager.getApplicationShortcut(i)) != null) {
 				mApplicationShortcutIconImageView[i].setImageDrawable(mApplicationShortcuts[i].getApplicationIcon());
 				mApplicationShortcutIconRemoveImageView[i].setVisibility(View.VISIBLE);
 			}
@@ -255,7 +259,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 				mApplicationShortcutsUsageSettingLinearLayout.startAnimation(animation);
 
 				mUseApplicationShortcuts = isChecked;
-				LockScreenDataProvider.getInstance(SettingActivity.this).setUseApplicationShortcuts(isChecked);
+				LockScreenDataManager.getInstance(SettingActivity.this).setUseApplicationShortcuts(isChecked);
 			}
 		});
 	}
@@ -290,7 +294,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		if (isGroupingModeChanged()) {
 			setGroupingModeText();
 			// save selected options(mode, period, usage of shortcuts) into shared preferences
-			LockScreenDataProvider.getInstance(this).setGroupingMode(mSelectedGroupingMode);
+			LockScreenDataManager.getInstance(this).setGroupingMode(mSelectedGroupingMode);
 
 			//if the service is running already, which also means the lock screen is running,
 			//compute the group color again immediately without clicking start application button.
@@ -303,7 +307,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 	}
 
 	private boolean isGroupingModeChanged() {
-		return mSelectedGroupingMode != LockScreenDataProvider.getInstance(this).getGroupingMode();
+		return mSelectedGroupingMode != LockScreenDataManager.getInstance(this).getGroupingMode();
 	}
 
 	@Override
@@ -338,7 +342,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 				groupingColorServiceIntent = new Intent(this, ColorGroupingService.class);
 
 				// save selected options(mode, period, usage of shortcuts) into shared preferences
-				LockScreenDataProvider.getInstance(this).setGroupingMode(mSelectedGroupingMode);
+				LockScreenDataManager.getInstance(this).setGroupingMode(mSelectedGroupingMode);
 
 				// stop service if there is a running service
 				if (mIsLockScreenRunning) {
@@ -346,8 +350,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 					// change the running state of lock screen into stop state
 					mIsLockScreenRunning = false;
 
-					LockScreenDataProvider.getInstance(this).setIsLockScreenRunning(mIsLockScreenRunning);
-					LockScreenDataProvider.getInstance(this).setGroupingMode(mSelectedGroupingMode);
+					LockScreenDataManager.getInstance(this).setIsLockScreenRunning(mIsLockScreenRunning);
+					LockScreenDataManager.getInstance(this).setGroupingMode(mSelectedGroupingMode);
 					toggleToggleApplicationButton();
 				} else {
 					// restart service with changed mode
@@ -357,8 +361,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 				break;
 			case R.id.linearLayout_grouping_mode_selection:
 				SingleChoiceDialogFragment singleChoiceDialogFragment = SingleChoiceDialogFragment.newInstance(R.string.group_mode_title,
-						R.array.grouping_mode_list,
-						LockScreenDataProvider.getInstance(this).getGroupingMode());
+						R.array.grouping_mode_list, LockScreenDataManager.getInstance(this).getGroupingMode());
 				singleChoiceDialogFragment.show(getSupportFragmentManager(), "grouping_mode_selection_dialog_fragment");
 				break;
 			case R.id.textView_lock_screen_background_selection:
@@ -395,7 +398,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		mApplicationShortcutIconImageView[applicationShortcutIndex].setImageResource(R.drawable.ic_add_circle_outline_black_48dp);
 		mApplicationShortcutIconRemoveImageView[applicationShortcutIndex].setVisibility(View.INVISIBLE);
 
-		LockScreenDataProvider.getInstance(this).removeApplicationShortcut(applicationShortcutIndex);
+		LockScreenDataManager.getInstance(this).removeApplicationShortcut(applicationShortcutIndex);
 	}
 
 	@Override
@@ -458,7 +461,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 		mApplicationShortcutIconImageView[applicationShortcutIndex].setImageDrawable(applicationIcon);
 		mApplicationShortcutIconRemoveImageView[applicationShortcutIndex].setVisibility(View.VISIBLE);
 
-		LockScreenDataProvider.getInstance(this).addApplicationShortcut(applicationShortcutIndex, applicationInfoBundle);
+		LockScreenDataManager.getInstance(this).addApplicationShortcut(applicationShortcutIndex, applicationInfoBundle);
 	}
 
 	private class ApplicationShortcutsLinearLayoutTransitionAnimation extends Animation {

@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 
 /**
- * Created by XEiN on 3/10/16.
+ * Created by In-Ho Han on 3/10/16.
  */
 public class BackgroundImageFileChangedDateSignature implements Key {
 	public long mCurrentChangedDate;

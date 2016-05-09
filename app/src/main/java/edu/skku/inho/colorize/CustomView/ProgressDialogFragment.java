@@ -12,7 +12,7 @@ import android.widget.TextView;
 import edu.skku.inho.colorize.R;
 
 /**
- * Created by XEiN on 5/3/16.
+ * Created by In-Ho Han on 5/3/16.
  */
 public class ProgressDialogFragment extends DialogFragment {
 	public static String PROGRESS_MESSAGE = "progress_message";
