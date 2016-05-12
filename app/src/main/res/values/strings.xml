@@ -6,7 +6,7 @@
     <!--SettingActivity-->
     <string name="general_setting_title">일반 설정</string>
     <string name="application_shortcuts_usage">어플리케이션 바로가기 사용</string>
-    <string name="select_application_to_use_as_shortcut">바로가기가 필요한 어플리케이션을 선택해주세요</string>
+    <string name="select_application_to_use_as_shortcut">바로가기가 필요한 어플리케이션을 선택해주세요.</string>
     <string name="advanced_setting_title">고급 설정</string>
     <string name="group_mode_title">그루핑 모드</string>
     <string name="grouping_with_fixed_color_mode">고정 컬러 그루핑 모드</string>
@@ -25,11 +25,12 @@
     <string name="lock_screen_background_selection">잠금화면 배경 설정</string>
     <string name="crop_image_to_use_as_background">배경 이미지 크롭</string>
     <string name="get_image_from_gallery">이미지 불러오기</string>
-    <string name="lock_screen_background_selected">잠금화면 배경이 설정되었습니다</string>
+    <string name="lock_screen_background_selected">잠금화면 배경이 설정되었습니다.</string>
 
     <!--TextColorSettingActivity-->
     <string name="lock_screen_digital_clock_text_color_selection">시계 폰트 색 설정</string>
-    <string name="select_from_text_color_recommendation">아래에서 추천 색을 선택해주세요</string>
+    <string name="select_from_text_color_recommendation">아래에서 추천 색을 선택해주세요.</string>
+    <string name="clock_and_date_color_applied">폰트 색을 적용하였습니다.</string>
 
     <!--ColorGroupingService-->
     <string name="colorize_running">Colorize</string>

@@ -275,6 +275,9 @@ public class IconColorGrouper {
 		 */
 		public IconColorGrouper generateWithCalculatedGroupColor() {
 			List<GroupColor> groupColorList = makeGroupColorList();
+			for (GroupColor groupColor : groupColorList) {
+				groupColor.setApplicationList(sortApplicationInAlphabeticalOrder(groupColor.getApplicationList()));
+			}
 			return new IconColorGrouper(mApplicationList, groupColorList);
 		}
 

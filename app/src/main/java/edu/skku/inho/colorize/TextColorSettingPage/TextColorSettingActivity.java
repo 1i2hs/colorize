@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -78,6 +79,7 @@ public class TextColorSettingActivity extends AppCompatActivity {
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				showTextColorAppliedMessageToast();
 				LockScreenDataManager.getInstance(TextColorSettingActivity.this).setDigitalClockTextColor(mSelectedColor);
 				finish();
 			}
@@ -118,6 +120,10 @@ public class TextColorSettingActivity extends AppCompatActivity {
 		}
 	}
 
+	private void showTextColorAppliedMessageToast() {
+		Toast.makeText(this, R.string.clock_and_date_color_applied, Toast.LENGTH_SHORT).show();
+	}
+
 	private ImageView configureRecommendedColorImageView(final int color, LinearLayout.LayoutParams layoutParams) {
 		ImageView colorImageView = new ImageView(this);
 		colorImageView.setLayoutParams(layoutParams);
@@ -137,6 +143,7 @@ public class TextColorSettingActivity extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
+		showTextColorAppliedMessageToast();
 		LockScreenDataManager.getInstance(this).setDigitalClockTextColor(mSelectedColor);
 		super.onBackPressed();
 	}
