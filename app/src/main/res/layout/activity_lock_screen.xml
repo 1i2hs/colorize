@@ -45,89 +45,242 @@
         android:elevation="3dp">
     </FrameLayout>
 
-    <edu.skku.inho.colorize.CustomView.CircleView
-        android:id="@+id/view_first_color_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="false"
-        android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:clickable="true"
-        android:elevation="4dp"
-        />
+    <!-- <edu.skku.inho.colorize.CustomView.CircleView
+         android:id="@+id/view_first_color_circle"
+         android:layout_width="40dp"
+         android:layout_height="40dp"
+         android:layout_alignParentRight="false"
+         android:layout_alignTop="@+id/view_selection_circle"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="20dp"
+         android:clickable="true"
+         android:elevation="4dp"
+         />
 
-    <edu.skku.inho.colorize.CustomView.CircleView
-        android:id="@+id/view_second_color_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentRight="false"
-        android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:elevation="4dp"/>
+     <edu.skku.inho.colorize.CustomView.CircleView
+         android:id="@+id/view_second_color_circle"
+         android:layout_width="40dp"
+         android:layout_height="40dp"
+         android:layout_alignParentEnd="false"
+         android:layout_alignParentRight="false"
+         android:layout_alignTop="@+id/view_selection_circle"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="20dp"
+         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.CustomView.CircleView
-        android:id="@+id/view_third_color_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="false"
-        android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:elevation="4dp"/>
+     <edu.skku.inho.colorize.CustomView.CircleView
+         android:id="@+id/view_third_color_circle"
+         android:layout_width="40dp"
+         android:layout_height="40dp"
+         android:layout_alignParentRight="false"
+         android:layout_alignTop="@+id/view_selection_circle"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="20dp"
+         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.CustomView.CircleView
-        android:id="@+id/view_fourth_color_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="false"
-        android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:elevation="4dp"/>
+     <edu.skku.inho.colorize.CustomView.CircleView
+         android:id="@+id/view_fourth_color_circle"
+         android:layout_width="40dp"
+         android:layout_height="40dp"
+         android:layout_alignParentRight="false"
+         android:layout_alignTop="@+id/view_selection_circle"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="20dp"
+         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.CustomView.CircleView
-        android:id="@+id/view_unlock_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="false"
-        android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/layerlist_unlock_circle"
-        android:elevation="4dp"/>
+     <edu.skku.inho.colorize.CustomView.CircleView
+         android:id="@+id/view_fifth_color_circle"
+         android:layout_width="40dp"
+         android:layout_height="40dp"
+         android:layout_alignParentRight="false"
+         android:layout_alignTop="@+id/view_selection_circle"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="20dp"
+         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.CustomView.CircleView
-        android:id="@+id/view_fifth_color_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="false"
-        android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:elevation="4dp"/>
+     <edu.skku.inho.colorize.CustomView.CircleView
+         android:id="@+id/view_sixth_color_circle"
+         android:layout_width="40dp"
+         android:layout_height="40dp"
+         android:layout_alignParentRight="false"
+         android:layout_alignTop="@+id/view_selection_circle"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="20dp"
+         android:elevation="4dp"/>
 
-    <edu.skku.inho.colorize.CustomView.CircleView
-        android:id="@+id/view_sixth_color_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="false"
-        android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:elevation="4dp"/>
+     <edu.skku.inho.colorize.CustomView.CircleView
+         android:id="@+id/view_seventh_color_circle"
+         android:layout_width="40dp"
+         android:layout_height="40dp"
+         android:layout_alignParentRight="false"
+         android:layout_alignTop="@+id/view_selection_circle"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="20dp"
+         android:elevation="4dp"/>-->
 
-    <edu.skku.inho.colorize.CustomView.CircleView
-        android:id="@+id/view_seventh_color_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="false"
-        android:layout_alignTop="@+id/view_selection_circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:elevation="4dp"/>
+    <RelativeLayout
+        android:id="@+id/relativeLayout_color_palette"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="3dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayout_row_one"
+            android:layout_width="match_parent"
+            android:layout_height="144dp"
+            android:layout_above="@+id/linearLayout_row_two"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/frameLayout_seventh_color"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <edu.skku.inho.colorize.CustomView.CircleView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_white_circle"
+                    android:elevation="4dp"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frameLayout_first_color"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <edu.skku.inho.colorize.CustomView.CircleView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_white_circle"
+                    android:elevation="4dp"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frameLayout_second_color"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <edu.skku.inho.colorize.CustomView.CircleView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_white_circle"
+                    android:elevation="4dp"/>
+
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout_row_two"
+            android:layout_width="match_parent"
+            android:layout_height="144dp"
+            android:layout_above="@+id/linearLayout_row_three"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <FrameLayout
+                android:id="@+id/frameLayout_sixth_color"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <edu.skku.inho.colorize.CustomView.CircleView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_white_circle"
+                    android:elevation="4dp"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/status_bar_color">
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frameLayout_third_color"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <edu.skku.inho.colorize.CustomView.CircleView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_white_circle"
+                    android:elevation="4dp"/>
+
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout_row_three"
+            android:layout_width="match_parent"
+            android:layout_height="144dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <FrameLayout
+                android:id="@+id/frameLayout_fourth_color"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <edu.skku.inho.colorize.CustomView.CircleView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_white_circle"
+                    android:elevation="4dp"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frameLayout_unlock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/unlock_tile_color">
+
+                <edu.skku.inho.colorize.CustomView.CircleView
+                    android:id="@+id/view_unlock_circle"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/layerlist_unlock_circle"
+                    android:elevation="4dp"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frameLayout_fifth_color"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <edu.skku.inho.colorize.CustomView.CircleView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_white_circle"
+                    android:elevation="4dp"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <View
         android:id="@+id/view_selection_circle"
@@ -161,7 +314,7 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_color_circle_background"
+                android:background="@drawable/shape_white_circle"
                 android:elevation="3dp"
                 android:visibility="invisible"/>
 
@@ -170,15 +323,14 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
+            android:layout_weight="1">
 
             <edu.skku.inho.colorize.CustomView.CircleView
                 android:id="@+id/imageView_second_shortcut_app"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_color_circle_background"
+                android:background="@drawable/shape_white_circle"
                 android:elevation="3dp"
                 android:visibility="invisible"/>
 
@@ -194,7 +346,7 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_color_circle_background"
+                android:background="@drawable/shape_white_circle"
                 android:elevation="3dp"
                 android:visibility="invisible"/>
 
@@ -210,7 +362,7 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_color_circle_background"
+                android:background="@drawable/shape_white_circle"
                 android:elevation="3dp"
                 android:visibility="invisible"/>
 

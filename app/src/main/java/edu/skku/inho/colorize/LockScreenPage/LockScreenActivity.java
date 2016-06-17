@@ -1,8 +1,9 @@
 package edu.skku.inho.colorize.LockScreenPage;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,14 +18,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,7 +35,6 @@ import java.util.ArrayList;
 import edu.skku.inho.colorize.ApplicationInfoBundle;
 import edu.skku.inho.colorize.ApplicationListDialog.ApplicationListFragment;
 import edu.skku.inho.colorize.Constants;
-import edu.skku.inho.colorize.CustomView.CircleView;
 import edu.skku.inho.colorize.CustomView.DigitalClockView;
 import edu.skku.inho.colorize.IconGroupingModule.GroupColor;
 import edu.skku.inho.colorize.Keys;
@@ -59,12 +61,17 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 
 	private ApplicationInfoBundle[] mApplicationShortcut = new ApplicationInfoBundle[4];
 
-	private float mTargetStraightTransitionValue;
-	private float mTargetDiagonalTransitionValue;
-	private float mLastStraightTransitionValue = 0.0F;
-	private float mLastDiagonalTransitionValue = 0.0F;
+	//private float mTargetStraightTransitionValue;
+	//private float mTargetDiagonalTransitionValue;
+	//private float mLastStraightTransitionValue = 0.0F;
+	//private float mLastDiagonalTransitionValue = 0.0F;
 
 	private boolean mIsSelectionViewBackgroundChanged = false;
+
+	private RelativeLayout mColorPaletteRelativeLayout;
+	private DisplayMetrics mDisplayMetrics;
+
+	private boolean mCircularRevealAnimationStarted = false;
 
 	// receiver that is executed when ColorGroupingService re-computes the group colors due to
 	// changes of application packages such as update, deletion, installation, etc. This receiver
@@ -74,7 +81,9 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 		public void onReceive(Context context, Intent intent) {
 			int messageFlag = intent.getIntExtra(Keys.COLOR_GROUPING_SERVICE_MESSAGE, -1);
 			if (messageFlag == Constants.COLOR_DATA_READY) {
-				configureColorCircles();
+				//configureColorCircles();
+				configureColorPalette();
+
 				configureSelectionCircle();
 				configureApplicationShortcuts();
 			}
@@ -105,14 +114,16 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 		configureBackground();
 		// check whether the computed color data is ready
 		if (LockScreenDataManager.getInstance(this).isColorDataReady() && LockScreenDataManager.getInstance(this).isLockScreenRunning()) {
-			mTargetStraightTransitionValue = getResources().getDimensionPixelSize(R.dimen.color_circle_straight_transition_value);
-			mTargetDiagonalTransitionValue = getResources().getDimensionPixelSize(R.dimen.color_circle_diagonal_transition_value);
-
+			configureDisplayMetrics();
 			configureBackgroundShade();
 			configureDigitalClock();
 			configureSelectionCircle();
-			configureColorCircles();
-			configureUnlockCircle();
+			//configureColorCircles();
+			//configureUnlockCircle();
+
+			configureColorPalette();
+			configureUnlockTile();
+
 			configureApplicationShortcuts();
 		} else {
 			// this branch is passed when the ColorGroupingService has been stopped abnormally
@@ -138,6 +149,14 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 		LockScreenDataManager.getInstance(this).applyBackgroundImage(mBackgroundImageView);
 	}
 
+	private void configureDisplayMetrics() {
+		mDisplayMetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+
+		//mTargetStraightTransitionValue = getResources().getDimensionPixelSize(R.dimen.color_circle_straight_transition_value);
+		//mTargetDiagonalTransitionValue = getResources().getDimensionPixelSize(R.dimen.color_circle_diagonal_transition_value);
+	}
+
 	protected void configureBackgroundShade() {
 		mBackgroundShadeFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_background_shade);
 		mBackgroundShadeFrameLayout.setAlpha(0.0F);
@@ -157,7 +176,60 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 		mSelectionView.setOnTouchListener(this);
 	}
 
-	protected void configureColorCircles() {
+	protected void configureColorPalette() {
+		mColorPaletteRelativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout_color_palette);
+		ArrayList<GroupColor> groupColorPointList = LockScreenDataManager.getInstance(this).getGroupColorList();
+		for (int i = 0; i < 7; i++) {
+			FrameLayout colorTileFrameLayout;
+
+			switch (i) {
+				case 0:
+					colorTileFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_first_color);
+					colorTileFrameLayout.setTag(GroupColor.FIRST_COLOR);
+					break;
+				case 1:
+					colorTileFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_second_color);
+					colorTileFrameLayout.setTag(GroupColor.SECOND_COLOR);
+					break;
+				case 2:
+					colorTileFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_third_color);
+					colorTileFrameLayout.setTag(GroupColor.THIRD_COLOR);
+					break;
+				case 3:
+					colorTileFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_fourth_color);
+					colorTileFrameLayout.setTag(GroupColor.FOURTH_COLOR);
+					break;
+				case 4:
+					colorTileFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_fifth_color);
+					colorTileFrameLayout.setTag(GroupColor.FIFTH_COLOR);
+					break;
+				case 5:
+					colorTileFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_sixth_color);
+					colorTileFrameLayout.setTag(GroupColor.SIXTH_COLOR);
+					break;
+				case 6:
+					colorTileFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_seventh_color);
+					colorTileFrameLayout.setTag(GroupColor.SEVENTH_COLOR);
+					break;
+				default:
+					Log.e(TAG, "number of color circle is overflown");
+					colorTileFrameLayout = null;
+					break;
+			}
+			colorTileFrameLayout.setBackgroundColor(groupColorPointList.get(i).getARGB());
+			colorTileFrameLayout.setOnDragListener(this);
+		}
+
+		mColorPaletteRelativeLayout.setVisibility(View.INVISIBLE);
+	}
+
+	protected void configureUnlockTile() {
+		FrameLayout unlockTileFrameLayout = (FrameLayout) findViewById(R.id.frameLayout_unlock);
+		unlockTileFrameLayout.setTag(Constants.UNLOCK);
+		unlockTileFrameLayout.setOnDragListener(this);
+	}
+
+	/*protected void configureColorCircles() {
 		ArrayList<GroupColor> groupColorPointList = LockScreenDataManager.getInstance(this).getGroupColorList();
 		for (int i = 0; i < 7; i++) {
 			CircleView colorCircleView;
@@ -199,13 +271,13 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 			colorCircleView.setColor(groupColorPointList.get(i).getARGB());
 			colorCircleView.setOnDragListener(this);
 		}
-	}
+	}*/
 
-	protected void configureUnlockCircle() {
+	/*protected void configureUnlockCircle() {
 		CircleView unlockCircle = (CircleView) findViewById(R.id.view_unlock_circle);
 		unlockCircle.setTag(Constants.UNLOCK);
 		unlockCircle.setOnDragListener(this);
-	}
+	}*/
 
 	protected void configureApplicationShortcuts() {
 		if (LockScreenDataManager.getInstance(this).isUseApplicationShortcuts()) {
@@ -272,15 +344,59 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		// Instantiates the drag shadow builder.
-		View.DragShadowBuilder myShadow = new SelectionCircleShadowBuilder(v);
+		if (event.getAction() == MotionEvent.ACTION_DOWN && !mCircularRevealAnimationStarted) {
+			View.DragShadowBuilder myShadow = new SelectionCircleShadowBuilder(v);
 
-		// Starts the drag
-		v.startDrag(null,  // the data to be dragged
-				myShadow,  // the drag shadow builder
-				null,      // no need to use local data
-				0          // flags (not currently used, set to 0)
-		);
-		return true;
+
+			int size = mSelectionView.getHeight() / 2;
+			revealColorPalette(mSelectionView.getX() + size, mSelectionView.getY() + size);
+			// Starts the drag
+			v.startDrag(null,  // the data to be dragged
+					myShadow,  // the drag shadow builder
+					null,      // no need to use local data
+					0          // flags (not currently used, set to 0)
+			);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void revealColorPalette(float clickedViewX, float clickedViewY) {
+		Animator anim = createCircularRevealAnimator(clickedViewX, clickedViewY, 0, calculateRadius(clickedViewX, clickedViewY));
+		mColorPaletteRelativeLayout.setVisibility(View.VISIBLE);
+		anim.addListener(new AnimatorListenerAdapter() {
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				Log.d(TAG, "revealAnimationEnd");
+				super.onAnimationEnd(animation);
+				mCircularRevealAnimationStarted = false;
+			}
+
+			@Override
+			public void onAnimationStart(Animator animation) {
+				Log.d(TAG, "revealAnimationStart");
+				super.onAnimationStart(animation);
+				mCircularRevealAnimationStarted = true;
+			}
+
+
+		});
+		anim.setDuration(500);
+		anim.start();
+
+	}
+
+	private Animator createCircularRevealAnimator(float clickedViewX, float clickedViewY, float initialRadius, float finalRadius) {
+		Animator anim = ViewAnimationUtils
+				.createCircularReveal(mColorPaletteRelativeLayout, (int) clickedViewX, (int) clickedViewY, initialRadius, finalRadius);
+		return anim;
+	}
+
+	private float calculateRadius(float clickedViewX, float clickedViewY) {
+		double diagonal1 = Math.sqrt(Math.pow(clickedViewX, 2) + Math.pow(clickedViewY, 2));
+		double diagonal2 = Math.sqrt(Math.pow(clickedViewX, 2) + Math.pow(mDisplayMetrics.heightPixels - clickedViewY, 2));
+		return (float) Math.max(diagonal1, diagonal2);
 	}
 
 	public boolean onDrag(View v, DragEvent event) {
@@ -298,7 +414,7 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 				}
 				// Returns false. During the current drag and drop operation, this View will
 				// not receive events again until ACTION_DRAG_ENDED is sent.
-				toggleColorCircles(v, true);
+				//toggleColorCircles(v, true);
 				return true;
 			case DragEvent.ACTION_DRAG_ENTERED:
 				// Invalidate the view to force a redraw in the new tint
@@ -313,26 +429,26 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 
 				return true;
 			case DragEvent.ACTION_DROP:
-				if (mLastStraightTransitionValue == mTargetStraightTransitionValue) {
-					String selectedColor = (String) v.getTag();
+				//if (mLastStraightTransitionValue == mTargetStraightTransitionValue) {
+				String selectedColor = (String) v.getTag();
 
-					// Invalidates the view to force a redraw
-					v.invalidate();
+				// Invalidates the view to force a redraw
+				v.invalidate();
 
-					if (selectedColor.equals(Constants.UNLOCK)) {
-						finish();
-					} else {
-						ApplicationListFragment applicationListFragment = ApplicationListFragment
-								.newInstance(selectedColor, Constants.LAUNCH_APPLICATION_MODE, event.getX() + v.getLeft(), event.getY() + v.getTop());
-						FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-						fragmentTransaction.add(android.R.id.content, applicationListFragment, "application_list_fragment");
-						fragmentTransaction.addToBackStack(null);
-						fragmentTransaction.commit();
-					}
-					// Returns true. DragEvent.getResult() will return true.
-					return true;
+				if (selectedColor.equals(Constants.UNLOCK)) {
+					finish();
+				} else {
+					ApplicationListFragment applicationListFragment = ApplicationListFragment
+							.newInstance(selectedColor, Constants.LAUNCH_APPLICATION_MODE, event.getX() + v.getLeft(), event.getY() + v.getTop());
+					FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+					fragmentTransaction.add(android.R.id.content, applicationListFragment, "application_list_fragment");
+					fragmentTransaction.addToBackStack(null);
+					fragmentTransaction.commit();
 				}
-				return false;
+				// Returns true. DragEvent.getResult() will return true.
+				return true;
+			//}
+			//return false;
 			case DragEvent.ACTION_DRAG_ENDED:
 				if (mIsSelectionViewBackgroundChanged) {
 					AnimatorSet animatorSet = new AnimatorSet();
@@ -341,8 +457,11 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 					animatorSet.playTogether(alphaAnimator1, alphaAnimator2);
 					animatorSet.start();
 					mIsSelectionViewBackgroundChanged = false;
+
+					int size = mSelectionView.getHeight() / 2;
+					concealColorPalette(mSelectionView.getX() + size, mSelectionView.getY() + size);
 				}
-				toggleColorCircles(v, false);
+				//toggleColorCircles(v, false);
 				// Invalidates the view to force a redraw
 				v.invalidate();
 				return true;
@@ -355,7 +474,23 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 		return false;
 	}
 
-	private void toggleColorCircles(View colorCircleView, boolean spread) {
+	private void concealColorPalette(float clickedViewX, float clickedViewY) {
+		Animator anim = createCircularRevealAnimator(clickedViewX, clickedViewY, calculateRadius(clickedViewX, clickedViewY), 0);
+		anim.addListener(new AnimatorListenerAdapter() {
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				Log.d(TAG, "concealAnimationEnd");
+				super.onAnimationEnd(animation);
+				if (!mCircularRevealAnimationStarted) {
+					mColorPaletteRelativeLayout.setVisibility(View.INVISIBLE);
+				}
+			}
+		});
+		anim.setDuration(500);
+		anim.start();
+	}
+
+	/*private void toggleColorCircles(View colorCircleView, boolean spread) {
 		if (colorCircleView.getTag() != null) {
 			float initStraightTransitionValue = 0.0F;
 			float targetStraightTransitionValue = 0.0F;
@@ -443,7 +578,7 @@ public class LockScreenActivity extends AppCompatActivity implements Application
 			}
 			spreadAnimatorSet.start();
 		}
-	}
+	}*/
 
 	private static class SelectionCircleShadowBuilder extends View.DragShadowBuilder {
 

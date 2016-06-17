@@ -19,7 +19,7 @@
     <string name="initializing_setting">설정 초기화중&#8230;</string>
     <string name="initializing_setting_done">설정 초기화 완료!!</string>
 
-    <string name="stop">정지</string>
+    <string name="stop">잠금화면 정지</string>
 
     <!--CroppingImageActivity-->
     <string name="lock_screen_background_selection">잠금화면 배경 설정</string>

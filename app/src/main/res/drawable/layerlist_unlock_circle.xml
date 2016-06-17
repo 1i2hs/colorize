@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/item_select_circle"
-        android:drawable="@drawable/shape_select_circle"/>
+        android:drawable="@drawable/shape_black_circle"/>
 
     <item>
         <bitmap

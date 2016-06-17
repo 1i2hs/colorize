@@ -41,6 +41,7 @@ public class ApplicationListFragment extends Fragment {
 
 	private OnApplicationListFragmentInteraction mListener;
 
+	private DisplayMetrics mDisplayMetrics;
 	/**
 	 * public constructor must be empty for factory method
 	 */
@@ -102,6 +103,9 @@ public class ApplicationListFragment extends Fragment {
 			}
 			mClickedViewX = getArguments().getFloat(Keys.CLICKED_VIEW_X_COORDINATE);
 			mClickedViewY = getArguments().getFloat(Keys.CLICKED_VIEW_Y_COORDINATE);
+
+			mDisplayMetrics = new DisplayMetrics();
+			getActivity().getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
 		}
 	}
 
@@ -179,11 +183,8 @@ public class ApplicationListFragment extends Fragment {
 	}
 
 	public void revealApplicationList() {
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
 		double diagonal1 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(mClickedViewY, 2));
-		double diagonal2 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(displayMetrics.heightPixels - mClickedViewY, 2));
+		double diagonal2 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(mDisplayMetrics.heightPixels - mClickedViewY, 2));
 		double finalRadius = Math.max(diagonal1, diagonal2);
 
 		Animator anim = ViewAnimationUtils
@@ -194,11 +195,8 @@ public class ApplicationListFragment extends Fragment {
 	}
 
 	public void concealApplicationList() {
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
 		double diagonal1 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(mClickedViewY, 2));
-		double diagonal2 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(displayMetrics.heightPixels - mClickedViewY, 2));
+		double diagonal2 = Math.sqrt(Math.pow(mClickedViewX, 2) + Math.pow(mDisplayMetrics.heightPixels - mClickedViewY, 2));
 		double initialRadius = Math.max(diagonal1, diagonal2);
 
 		Animator anim = ViewAnimationUtils
